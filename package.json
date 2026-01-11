@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy": "astro build && git add . && git commit -m 'deploy' && git push origin main"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

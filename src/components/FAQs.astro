@@ -1,0 +1,115 @@
+---
+const faqs = [
+	{
+		question: "How does WatchThis! work?",
+		answer:
+			"WatchThis! is a simple browser extension that adds a 'Recommend' button to every YouTube video. When you click it, you can select friends from your list, and the video will appear as a recommendation on their YouTube homepage the next time they visit. It's like a personal video suggestion from you!",
+	},
+	{
+		question: "Is my data safe and private?",
+		answer:
+			"Absolutely! I take privacy seriously. WatchThis! only stores the minimal data needed to deliver recommendations. I never track your viewing habits, and all data is encrypted. Since it's open-source, you can verify this yourself by checking the code on GitHub.",
+	},
+	{
+		question: "Which browsers are supported?",
+		answer:
+			"WatchThis! currently supports all Chromium-based browsers including Google Chrome, Microsoft Edge, Brave, and Opera. Firefox support is coming soon! Make sure you have the latest version of your browser for the best experience.",
+	},
+	{
+		question: "How do I add friends to share videos with?",
+		answer:
+			"After installing the extension, click the WatchThis! icon in your browser toolbar. You can add friends by sharing a unique invite link with them. Once they accept and install the extension, you'll be connected and can start sharing videos instantly!",
+	},
+];
+---
+
+<section id="faq" class="py-20 bg-gradient-to-b from-gray-50/30 to-white">
+	<div class="container max-w-3xl">
+		<!-- Section Header -->
+		<div class="text-center mb-12">
+			<h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+				Frequently Asked Questions
+			</h2>
+			<p class="text-lg text-gray-600">Got questions? I've got answers.</p>
+		</div>
+
+		<!-- FAQ Accordion -->
+		<div class="space-y-4">
+			{
+				faqs.map((faq, index) => (
+					<div class="faq-item bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+						<button
+							class="faq-trigger w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-inset"
+							aria-expanded="false"
+							data-index={index}
+						>
+							<span class="font-semibold text-gray-900 pr-4">
+								{faq.question}
+							</span>
+							<span class="faq-icon flex-shrink-0 w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center transition-all duration-300">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="w-5 h-5 text-gray-600 transition-transform duration-300"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M19 9l-7 7-7-7"
+									/>
+								</svg>
+							</span>
+						</button>
+						<div class="accordion-content">
+							<div class="px-6 pb-5 pt-0">
+								<p class="text-gray-600 leading-relaxed">{faq.answer}</p>
+							</div>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	const triggers = document.querySelectorAll(".faq-trigger");
+
+	triggers.forEach((trigger) => {
+		trigger.addEventListener("click", () => {
+			const parent = trigger.parentElement;
+			const content = parent?.querySelector(".accordion-content");
+			const icon = trigger.querySelector(".faq-icon svg");
+			const isOpen = content?.classList.contains("open");
+
+			// Close all other items
+			document
+				.querySelectorAll(".accordion-content.open")
+				.forEach((openContent) => {
+					if (openContent !== content) {
+						openContent.classList.remove("open");
+						const openIcon =
+							openContent.parentElement?.querySelector(".faq-icon svg");
+						openIcon?.classList.remove("rotate-180");
+						openContent.parentElement
+							?.querySelector(".faq-trigger")
+							?.setAttribute("aria-expanded", "false");
+					}
+				});
+
+			// Toggle current item
+			if (isOpen) {
+				content?.classList.remove("open");
+				icon?.classList.remove("rotate-180");
+				trigger.setAttribute("aria-expanded", "false");
+			} else {
+				content?.classList.add("open");
+				icon?.classList.add("rotate-180");
+				trigger.setAttribute("aria-expanded", "true");
+			}
+		});
+	});
+</script>
