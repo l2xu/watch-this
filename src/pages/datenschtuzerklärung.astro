@@ -1,0 +1,354 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+	<section class="pt-32 pb-20">
+		<div class="container max-w-3xl">
+			<!-- Language Toggle -->
+			<div class="flex justify-end mb-8">
+				<div
+					class="inline-flex rounded-lg border border-gray-200 p-1 bg-gray-50"
+				>
+					<button
+						id="lang-en"
+						class="lang-btn px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-gray-900 shadow-sm"
+					>
+						English
+					</button>
+					<button
+						id="lang-de"
+						class="lang-btn px-4 py-2 text-sm font-medium rounded-md transition-colors text-gray-500 hover:text-gray-700"
+					>
+						Deutsch
+					</button>
+				</div>
+			</div>
+
+			<!-- German Version -->
+			<article id="content-de" class="prose hidden">
+				<h1 class="text-3xl font-bold text-gray-900 mb-8">
+					Datenschutzerklärung
+				</h1>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						1. Datenschutz auf einen Blick
+					</h2>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						Allgemeine Hinweise
+					</h3>
+					<p class="text-gray-600 leading-relaxed">
+						Die folgenden Hinweise geben einen einfachen Überblick darüber, was
+						mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website
+						besuchen oder meine Browser-Extension nutzen. Personenbezogene Daten
+						sind alle Daten, mit denen Sie persönlich identifiziert werden
+						können.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						2. Verantwortliche Stelle
+					</h2>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						Die verantwortliche Stelle für die Datenverarbeitung auf dieser
+						Website und innerhalb der Extension ist:
+					</p>
+					<address
+						class="not-italic text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-100"
+					>
+						<strong class="text-gray-800"
+							>Softwareentwicklung Lukas Weihrauch</strong
+						><br />
+						Emsdettener Str. 10, 48268 Greven<br />
+						E-Mail: mail@lukasweihrauch.de
+					</address>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						3. Hosting und Infrastruktur
+					</h2>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						Wir hosten unsere Website und das Backend der Extension bei
+						folgendem Anbieter:
+					</p>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">Netcup</h3>
+					<p class="text-gray-600 leading-relaxed mb-3">
+						Anbieter ist die netcup GmbH, Daimlerstraße 25, 76185 Karlsruhe. Die
+						Website sowie die Datenbank der Extension (Pocketbase) werden auf
+						Servern von netcup in Deutschland betrieben.
+					</p>
+					<p class="text-gray-600 leading-relaxed">
+						Die Verwendung von netcup erfolgt auf Grundlage von Art. 6 Abs. 1
+						lit. f DSGVO. Wir haben ein berechtigtes Interesse an einer
+						möglichst zuverlässigen Darstellung und sicheren Bereitstellung
+						unserer Dienste. Ein Vertrag über Auftragsverarbeitung (AVV) wurde
+						geschlossen.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						4. Datenerfassung in der Browser-Extension
+					</h2>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						Account-Erstellung
+					</h3>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						Für die Nutzung der Extension können Sie einen Account erstellen.
+						Hierfür wird Ihre <strong class="text-gray-800"
+							>E-Mail-Adresse</strong
+						> erhoben und gespeichert. Dies dient der Authentifizierung und der Bereitstellung
+						der Kernfunktionen der Software (Art. 6 Abs. 1 lit. b DSGVO).
+					</p>
+
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						Berechtigungen (Permissions)
+					</h3>
+					<p class="text-gray-600 leading-relaxed mb-3">
+						Die Extension nutzt folgende Browser-Berechtigungen:
+					</p>
+					<ul class="space-y-3 text-gray-600">
+						<li class="flex gap-2">
+							<span class="text-primary font-medium">•</span>
+							<span
+								><strong class="text-gray-800">storage:</strong> Wird verwendet, um
+								Ihre Login-Session lokal im Browser zu speichern. Dadurch bleiben
+								Sie auch nach dem Schließen des Browsers angemeldet, ohne Ihre Daten
+								erneut eingeben zu müssen.</span
+							>
+						</li>
+						<li class="flex gap-2">
+							<span class="text-primary font-medium">•</span>
+							<span
+								><strong class="text-gray-800">tabs:</strong> Diese Berechtigung wird
+								benötigt, um die Funktionen der Extension mit den von Ihnen besuchten
+								Webseiten zu interagieren (z. B. Auslesen der aktuellen URL zur Verarbeitung
+								innerhalb der Extension).</span
+							>
+						</li>
+					</ul>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						5. Datenerfassung auf der Website
+					</h2>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						Analyse-Tool counter.dev
+					</h3>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						Wir nutzen auf dieser Website den Analysedienst <strong
+							class="text-gray-800">counter.dev</strong
+						>. Dieser Dienst ermöglicht eine datenschutzfreundliche Analyse der
+						Webseitennutzung. Dabei werden <strong class="text-gray-800"
+							>keine Cookies</strong
+						> gesetzt und keine Daten gespeichert, die eine persönliche Identifizierung
+						der Besucher ermöglichen.
+					</p>
+
+					<h3 class="text-lg font-medium text-gray-700 mb-2">Cookies</h3>
+					<p class="text-gray-600 leading-relaxed">
+						Diese Website verwendet <strong class="text-gray-800"
+							>keine Cookies</strong
+						>.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						6. Ihre Rechte
+					</h2>
+					<p class="text-gray-600 leading-relaxed mb-3">
+						Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen
+						jederzeit das Recht auf unentgeltliche Auskunft über Ihre
+						gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger
+						und den Zweck der Datenverarbeitung und ggf. ein Recht auf
+						Berichtigung oder Löschung dieser Daten.
+					</p>
+					<p class="text-gray-600 leading-relaxed">
+						Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie
+						sich jederzeit unter der im Impressum angegebenen Adresse an uns
+						wenden.
+					</p>
+				</section>
+			</article>
+
+			<!-- English Version -->
+			<article id="content-en" class="prose">
+				<h1 class="text-3xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						1. Privacy at a Glance
+					</h2>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						General Information
+					</h3>
+					<p class="text-gray-600 leading-relaxed">
+						The following information provides a simple overview of what happens
+						to your personal data when you visit this website or use my browser
+						extension. Personal data is any data that can be used to personally
+						identify you.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						2. Responsible Party
+					</h2>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						The responsible party for data processing on this website and within
+						the extension is:
+					</p>
+					<address
+						class="not-italic text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-100"
+					>
+						<strong class="text-gray-800"
+							>Softwareentwicklung Lukas Weihrauch</strong
+						><br />
+						Emsdettener Str. 10, 48268 Greven, Germany<br />
+						Email: mail@lukasweihrauch.de
+					</address>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						3. Hosting and Infrastructure
+					</h2>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						We host our website and the extension backend with the following
+						provider:
+					</p>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">Netcup</h3>
+					<p class="text-gray-600 leading-relaxed mb-3">
+						The provider is netcup GmbH, Daimlerstraße 25, 76185 Karlsruhe,
+						Germany. The website and the extension database (Pocketbase) are
+						operated on netcup servers in Germany.
+					</p>
+					<p class="text-gray-600 leading-relaxed">
+						The use of netcup is based on Art. 6 (1) lit. f GDPR. We have a
+						legitimate interest in the most reliable presentation and secure
+						provision of our services. A data processing agreement (DPA) has
+						been concluded.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						4. Data Collection in the Browser Extension
+					</h2>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						Account Creation
+					</h3>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						To use the extension, you can create an account. For this purpose,
+						your
+						<strong class="text-gray-800">email address</strong> is collected and
+						stored. This is used for authentication and providing the core functions
+						of the software (Art. 6 (1) lit. b GDPR).
+					</p>
+
+					<h3 class="text-lg font-medium text-gray-700 mb-2">Permissions</h3>
+					<p class="text-gray-600 leading-relaxed mb-3">
+						The extension uses the following browser permissions:
+					</p>
+					<ul class="space-y-3 text-gray-600">
+						<li class="flex gap-2">
+							<span class="text-primary font-medium">•</span>
+							<span
+								><strong class="text-gray-800">storage:</strong> Used to save your
+								login session locally in the browser. This keeps you logged in even
+								after closing the browser, without having to re-enter your data.</span
+							>
+						</li>
+						<li class="flex gap-2">
+							<span class="text-primary font-medium">•</span>
+							<span
+								><strong class="text-gray-800">tabs:</strong> This permission is required
+								to enable the extension to interact with the web pages you visit (e.g.,
+								reading the current URL for processing within the extension).</span
+							>
+						</li>
+					</ul>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						5. Data Collection on the Website
+					</h2>
+					<h3 class="text-lg font-medium text-gray-700 mb-2">
+						Analytics Tool counter.dev
+					</h3>
+					<p class="text-gray-600 leading-relaxed mb-4">
+						We use the analytics service <strong class="text-gray-800"
+							>counter.dev</strong
+						> on this website. This service enables privacy-friendly analysis of website
+						usage. It does
+						<strong class="text-gray-800">not set any cookies</strong> and does not
+						store any data that would allow personal identification of visitors.
+					</p>
+
+					<h3 class="text-lg font-medium text-gray-700 mb-2">Cookies</h3>
+					<p class="text-gray-600 leading-relaxed">
+						This website uses <strong class="text-gray-800">no cookies</strong>.
+					</p>
+				</section>
+
+				<section class="mb-10">
+					<h2 class="text-xl font-semibold text-gray-800 mb-4">
+						6. Your Rights
+					</h2>
+					<p class="text-gray-600 leading-relaxed mb-3">
+						Within the framework of applicable legal provisions, you have the
+						right at any time to free information about your stored personal
+						data, its origin and recipients, and the purpose of data processing,
+						and if applicable, a right to correction or deletion of this data.
+					</p>
+					<p class="text-gray-600 leading-relaxed">
+						For this purpose, as well as for further questions on the subject of
+						data protection, you can contact us at any time at the address
+						provided in the imprint.
+					</p>
+				</section>
+			</article>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const langDe = document.getElementById("lang-de");
+	const langEn = document.getElementById("lang-en");
+	const contentDe = document.getElementById("content-de");
+	const contentEn = document.getElementById("content-en");
+
+	function setLanguage(lang: "de" | "en") {
+		if (lang === "de") {
+			contentDe?.classList.remove("hidden");
+			contentEn?.classList.add("hidden");
+			langDe?.classList.add("bg-white", "text-gray-900", "shadow-sm");
+			langDe?.classList.remove("text-gray-500", "hover:text-gray-700");
+			langEn?.classList.remove("bg-white", "text-gray-900", "shadow-sm");
+			langEn?.classList.add("text-gray-500", "hover:text-gray-700");
+		} else {
+			contentDe?.classList.add("hidden");
+			contentEn?.classList.remove("hidden");
+			langEn?.classList.add("bg-white", "text-gray-900", "shadow-sm");
+			langEn?.classList.remove("text-gray-500", "hover:text-gray-700");
+			langDe?.classList.remove("bg-white", "text-gray-900", "shadow-sm");
+			langDe?.classList.add("text-gray-500", "hover:text-gray-700");
+		}
+		localStorage.setItem("privacy-lang", lang);
+	}
+
+	langDe?.addEventListener("click", () => setLanguage("de"));
+	langEn?.addEventListener("click", () => setLanguage("en"));
+
+	// Check for saved preference
+	const savedLang = localStorage.getItem("privacy-lang") as "de" | "en" | null;
+	if (savedLang) {
+		setLanguage(savedLang);
+	}
+</script>
