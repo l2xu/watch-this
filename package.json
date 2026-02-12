@@ -10,8 +10,11 @@
     "deploy": "astro build && git add . && git commit -m 'deploy' && git push"
   },
   "dependencies": {
+    "@iconify-json/lucide": "^1.2.90",
+    "@iconify-json/simple-icons": "^1.2.70",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.8",
+    "astro-icon": "^1.1.5",
     "tailwindcss": "^4.1.18"
   }
 }

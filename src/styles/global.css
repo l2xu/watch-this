@@ -101,13 +101,15 @@ h6 {
 .accordion-content {
 	max-height: 0;
 	overflow: hidden;
+	opacity: 0;
 	transition:
-		max-height 0.3s ease-out,
-		padding 0.3s ease-out;
+		max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+		opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .accordion-content.open {
 	max-height: 500px;
+	opacity: 1;
 }
 
 /* ===== Mobile Menu ===== */

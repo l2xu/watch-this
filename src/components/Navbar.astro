@@ -1,10 +1,5 @@
 ---
-const navLinks = [
-	{ href: "/#features", label: "Features" },
-	{ href: "/#pricing", label: "Pricing" },
-	{ href: "/#video", label: "Video" },
-	{ href: "/#faq", label: "FAQ" },
-];
+import { Icon } from "astro-icon/components";
 ---
 
 <nav
@@ -19,131 +14,44 @@ const navLinks = [
 					alt="WatchThis! Logo"
 					class="h-8 w-auto transition-transform group-hover:scale-105"
 				/>
-				<span class="text-xl font-heading text-gray-900"
+				<span class="text-xl font-heading font-bold text-gray-900"
 					><span class="text-primary">Watch</span>This!</span
 				>
 			</a>
 
-			<!-- Desktop Navigation -->
-			<div class="hidden md:flex items-center gap-8">
-				{
-					navLinks.map((link) => (
-						<a
-							href={link.href}
-							class="text-gray-600 hover:text-primary font-medium transition-colors duration-200"
-						>
-							{link.label}
-						</a>
-					))
-				}
-			</div>
-
-			<!-- Mobile Menu Button -->
-			<button
-				id="mobile-menu-btn"
-				class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
-				aria-label="Open menu"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="w-6 h-6 text-gray-700"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					stroke-width="2"
+			<!-- Store & GitHub Links -->
+			<div class="flex items-center gap-4">
+				<a
+					href="https://chromewebstore.google.com/detail/watchthis/hbpkmdcgckbogdkkepcnmgankbbjjlha"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+					aria-label="Chrome Web Store"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M4 6h16M4 12h16M4 18h16"></path>
-				</svg>
-			</button>
+					<Icon
+						name="simple-icons:googlechrome"
+						class="w-6 h-6 text-gray-700"
+					/>
+				</a>
+				<a
+					href="https://addons.mozilla.org/de/firefox/addon/watchthis/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+					aria-label="Firefox Add-ons"
+				>
+					<Icon name="simple-icons:firefox" class="w-6 h-6 text-gray-700" />
+				</a>
+				<a
+					href="https://github.com/l2xu/watch-this"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+					aria-label="GitHub Repository"
+				>
+					<Icon name="simple-icons:github" class="w-6 h-6 text-gray-700" />
+				</a>
+			</div>
 		</div>
 	</div>
 </nav>
-
-<!-- Mobile Menu Overlay - Outside nav for proper z-index -->
-<div
-	id="mobile-menu-overlay"
-	class="mobile-menu-overlay fixed inset-0 bg-black/50 z-[100] md:hidden"
->
-</div>
-
-<!-- Mobile Menu Drawer - Outside nav for proper z-index -->
-<div
-	id="mobile-menu"
-	class="mobile-menu fixed top-0 right-0 h-full w-72 bg-white shadow-2xl z-[110] md:hidden"
->
-	<div class="flex items-center justify-between p-4 border-b border-gray-100">
-		<span class="text-lg font-bold text-gray-900">Menu</span>
-		<button
-			id="mobile-menu-close"
-			class="p-2 rounded-xl hover:bg-gray-100 transition-colors"
-			aria-label="Close menu"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="w-6 h-6 text-gray-700"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-				stroke-width="2"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M6 18L18 6M6 6l12 12"></path>
-			</svg>
-		</button>
-	</div>
-	<div class="p-4 flex flex-col gap-2">
-		<a
-			href="/#features"
-			class="mobile-link block px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-xl font-medium transition-colors duration-200"
-			>Features</a
-		>
-		<a
-			href="/#pricing"
-			class="mobile-link block px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-xl font-medium transition-colors duration-200"
-			>Pricing</a
-		>
-		<a
-			href="/#video"
-			class="mobile-link block px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-xl font-medium transition-colors duration-200"
-			>Video</a
-		>
-		<a
-			href="/#faq"
-			class="mobile-link block px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-xl font-medium transition-colors duration-200"
-			>FAQ</a
-		>
-	</div>
-</div>
-
-<script>
-	const menuBtn = document.getElementById("mobile-menu-btn");
-	const menuClose = document.getElementById("mobile-menu-close");
-	const menu = document.getElementById("mobile-menu");
-	const overlay = document.getElementById("mobile-menu-overlay");
-	const mobileLinks = document.querySelectorAll(".mobile-link");
-
-	function openMenu() {
-		menu?.classList.add("open");
-		overlay?.classList.add("open");
-		document.body.style.overflow = "hidden";
-	}
-
-	function closeMenu() {
-		menu?.classList.remove("open");
-		overlay?.classList.remove("open");
-		document.body.style.overflow = "";
-	}
-
-	menuBtn?.addEventListener("click", openMenu);
-	menuClose?.addEventListener("click", closeMenu);
-	overlay?.addEventListener("click", closeMenu);
-
-	mobileLinks.forEach((link) => {
-		link.addEventListener("click", closeMenu);
-	});
-</script>

@@ -8,8 +8,51 @@ Marketing landing page for WatchThis! - a browser extension for sharing YouTube 
 
 - **Framework**: Astro 5.16+ (static site, file-based routing)
 - **Styling**: Tailwind CSS v4 with `@theme` directive in [src/styles/global.css](src/styles/global.css)
+- **Icons**: astro-icon with Lucide (UI) and Simple Icons (brands)
 - **Components**: Pure Astro components (no React/Vue/Svelte)
 - **Layout**: [src/layouts/Layout.astro](src/layouts/Layout.astro) wraps all pages with Navbar + Footer
+
+## Icons with astro-icon
+
+### Icon Packs
+
+Use only these two icon packs to maintain consistency:
+
+- **Lucide** (`lucide:*`) - All UI elements (menu, close, chevron, arrows, globe, heart, download, check, play, etc.)
+- **Simple Icons** (`simple-icons:*`) - Brand logos only (YouTube, GitHub, Ko-fi)
+
+### Usage Pattern
+
+Import Icon component in frontmatter and use with icon name:
+
+```astro
+---
+import { Icon } from "astro-icon/components";
+---
+
+<!-- UI icons from Lucide -->
+<Icon name="lucide:menu" class="w-6 h-6" />
+<Icon name="lucide:chevron-down" class="w-5 h-5 text-gray-600" />
+
+<!-- Brand icons from Simple Icons -->
+<Icon name="simple-icons:github" class="w-5 h-5" />
+<Icon name="simple-icons:youtube" class="w-5 h-5" />
+```
+
+### Common Icons Reference
+
+- Navigation: `lucide:menu`, `lucide:x` (close)
+- Actions: `lucide:download`, `lucide:check`, `lucide:heart`
+- Arrows: `lucide:arrow-left`, `lucide:chevron-down`
+- General: `lucide:globe`, `lucide:play`
+- Brands: `simple-icons:github`, `simple-icons:youtube`, `simple-icons:kofi`
+
+### Guidelines
+
+- NEVER use inline SVG - always use Icon component
+- Apply Tailwind classes directly to Icon component
+- Use consistent sizing: `w-5 h-5` for inline icons, `w-6 h-6` for buttons
+- Icons inherit `currentColor` by default
 
 ## Architecture Patterns
 
@@ -151,3 +194,4 @@ For toggles (mobile menu, accordions, language switch):
 - Self-contained components with inline scripts (no external JS files)
 - Consistent button styling: `rounded-2xl` not `rounded-lg` for primary CTAs
 - Shadow utilities with color variants: `shadow-lg shadow-primary/25`
+- Use astro-icon Icon component instead of inline SVG elements

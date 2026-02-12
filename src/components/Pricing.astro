@@ -1,5 +1,5 @@
 ---
-
+import { Icon } from "astro-icon/components";
 ---
 
 <section
@@ -8,13 +8,13 @@
 >
 	<div class="container text-center">
 		<h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">
-			Free & Community Funded
+			Community Funded & Open Source
 		</h2>
 
 		<p class="text-lg text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed">
 			WatchThis! is completely free to use. I believe great tools should be
-			accessible to everyone. The project is supported by my amazing community
-			through voluntary donations.
+			accessible to everyone. The project is supported by my community through
+			voluntary donations.
 		</p>
 
 		<p class="text-base text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
@@ -31,37 +31,16 @@
 				target="_blank"
 				class="inline-flex items-center justify-center px-8 py-4 bg-white text-primary font-semibold rounded-2xl shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="w-5 h-5 mr-2"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-				>
-					<path
-						d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-					></path>
-				</svg>
+				<Icon name="lucide:heart" class="w-5 h-5 mr-2" />
 				Support WatchThis! with your donation
 			</a>
 			<a
-				href="#"
+				href="https://github.com/l2xu/watch-this"
+				target="_blank"
 				class="inline-flex items-center justify-center px-6 py-3 bg-white/10 text-white font-medium rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-0.5"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="w-4 h-4 mr-2"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-					></path>
-				</svg>
-				Install WatchThis! for Free
+				<Icon name="simple-icons:github" class="w-5 h-5 mr-2" />
+				View on GitHub
 			</a>
 		</div>
 	</div>
