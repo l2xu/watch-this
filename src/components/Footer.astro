@@ -6,17 +6,17 @@ const currentYear = new Date().getFullYear();
 const socialLinks = [
 	{
 		name: "YouTube",
-		href: "#",
+		href: "https://www.youtube.com/@Lukas_Weihrauch",
 		icon: "simple-icons:youtube",
 	},
 	{
 		name: "GitHub",
-		href: "#",
+		href: "https://github.com/lukasweihrauch",
 		icon: "simple-icons:github",
 	},
 	{
 		name: "Website",
-		href: "#",
+		href: "https://www.lukasweihrauch.de",
 		icon: "lucide:globe",
 	},
 	{
@@ -50,14 +50,26 @@ const socialLinks = [
 
 			<!-- Install & Connect -->
 			<div>
-				<h3 class="font-semibold text-lg mb-4 text-white">Get Started</h3>
-				<a
-					href="#"
-					class="inline-flex items-center justify-center px-6 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-white/90 transition-colors mb-6"
-				>
-					<Icon name="lucide:download" class="w-5 h-5 mr-2" />
-					Install Extension
-				</a>
+				<div class="flex items-center gap-4 mb-6">
+					<a
+						href="https://chromewebstore.google.com/detail/watchthis/hbpkmdcgckbogdkkepcnmgankbbjjlha"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center justify-center px-6 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-white/90 transition-colors"
+					>
+						<Icon name="simple-icons:googlechrome" class="w-5 h-5 mr-2" />
+						Chrome
+					</a>
+					<a
+						href="https://addons.mozilla.org/en-US/firefox/addon/watchthis/"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center justify-center px-6 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-white/90 transition-colors"
+					>
+						<Icon name="simple-icons:firefox" class="w-5 h-5 mr-2" />
+						Firefox
+					</a>
+				</div>
 
 				<!-- Social Links -->
 				<div class="flex items-center gap-4">
@@ -65,6 +77,8 @@ const socialLinks = [
 						socialLinks.map((social) => (
 							<a
 								href={social.href}
+								target="_blank"
+								rel="noopener noreferrer"
 								class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300"
 								aria-label={social.name}
 							>

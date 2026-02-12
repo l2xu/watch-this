@@ -1,93 +1,81 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
-
-const steps = [
-	{
-		number: "1",
-		title: "Create an Account",
-		description: "It's quick, easy, and completely free. Check your emails spam folder for the verification mail.",
-		placeholder: "/placeholders/step-1.png",
-	},
-	{
-		number: "2",
-		title: "Add Friends",
-		description: "Connect with your friends using their unique username. Build your network and start sharing.",
-		placeholder: "/placeholders/step-2.gif",
-	},
-	{
-		number: "3",
-		title: "Send Videos",
-		description: "Found an awesome video? Share it with a single click directly from any YouTube page.",
-		placeholder: "/placeholders/step-3.gif",
-	},
-	{
-		number: "4",
-		title: "Receive Videos",
-		description: "Your friends' recommendations appear right on your YouTube feed. No more missed videos!",
-		placeholder: "/placeholders/step-4.png",
-	},
-];
 ---
 
 <Layout>
 	<!-- Hero Section -->
-	<section class="pt-32 pb-12 bg-gradient-to-b from-white via-white to-gray-50/50">
+	<section
+		class="pt-32 pb-12 bg-gradient-to-b from-white via-white to-gray-50/50"
+	>
 		<div class="container text-center">
-			<div class="inline-flex items-center justify-center mb-6 px-4 py-2 bg-green-50 rounded-full border border-green-200">
+			<div
+				class="inline-flex items-center justify-center mb-6 px-4 py-2 bg-green-50 rounded-full border border-green-200"
+			>
 				<Icon name="lucide:check" class="w-5 h-5 mr-2 text-green-600" />
-				<span class="text-green-700 font-semibold">Extension Successfully Installed!</span>
+				<span class="text-green-700 font-semibold"
+					>Extension Successfully Installed!</span
+				>
 			</div>
-			<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+			<h1
+				class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight"
+			>
 				Welcome to <span class="text-primary">WatchThis!</span>
 			</h1>
 			<p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-				You're all set! Let's get you started with sharing YouTube videos the easy way.
+				You're all set! Let's get you started with sharing YouTube videos the
+				easy way.
 			</p>
 		</div>
 	</section>
 
-	<!-- Steps Section -->
-	<section class="py-16 bg-gradient-to-b from-gray-50/50 to-white">
+	<!-- Donation Section -->
+	<section class="py-24 bg-gradient-to-b from-gray-50/50 to-white">
 		<div class="container">
-			<h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-center">
-				Get Started in 4 Simple Steps
-			</h2>
-			<p class="text-lg text-gray-600 mb-16 text-center max-w-2xl mx-auto">
-				Follow these steps to start sharing and discovering amazing videos with your friends.
-			</p>
-
-			<!-- Steps Grid -->
-			<div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-				{steps.map((step, index) => (
-					<div class="group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
-						<!-- Step Number Badge -->
-						<div class="absolute -top-4 -left-4 w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg shadow-primary/25">
-							{step.number}
+			<div class="max-w-3xl mx-auto">
+				<div
+					class="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-100"
+				>
+					<!-- Heart Icon -->
+					<div class="flex justify-center mb-6">
+						<div
+							class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center"
+						>
+							<Icon name="lucide:heart" class="w-8 h-8 text-primary" />
 						</div>
-
-						<!-- Image/GIF Placeholder -->
-						<div class="mb-6 mt-2 bg-gray-100 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border-2 border-gray-200">
-							<img src={step.placeholder} alt={`Step ${step.number} Illustration`} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-						</div>
-
-						<!-- Content -->
-						<h3 class="text-2xl font-bold text-gray-900 mb-3">
-							{step.title}
-						</h3>
-						<p class="text-gray-600 leading-relaxed">
-							{step.description}
-						</p>
 					</div>
-				))}
-			</div>
 
-			<!-- Quick Start Arrow/Connector for desktop -->
-			<div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-				<!-- You can add decorative arrows between steps here if desired -->
+					<!-- Content -->
+					<h2
+						class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-center"
+					>
+						Support WatchThis!
+					</h2>
+					<p class="text-lg text-gray-600 mb-8 text-center leading-relaxed">
+						WatchThis! is completely free. If you enjoy using the extension and
+						want to support its development, consider leaving a donation. Every
+						contribution helps keep the project alive and growing!
+					</p>
+
+					<!-- Donation Button -->
+					<div class="flex justify-center">
+						<a
+							href="https://ko-fi.com/lukasweihrauch"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-primary hover:bg-primary-hover rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
+						>
+							<Icon name="simple-icons:kofi" class="w-6 h-6" />
+							Support on Ko-fi
+						</a>
+					</div>
+
+					<!-- Thank You Note -->
+					<p class="text-sm text-gray-500 mt-8 text-center">
+						Thank you for your support! 🙏
+					</p>
+				</div>
 			</div>
 		</div>
 	</section>
-
-
 </Layout>
