@@ -39,6 +39,15 @@ export interface Translations {
 		privacyLink: Translation;
 		imprintLink: Translation;
 	};
+	welcome: {
+		successBadge: Translation;
+		pageTitle: Translation;
+		subtitle: Translation;
+		donationHeading: Translation;
+		donationDescription: Translation;
+		ctaButton: Translation;
+		thankYouNote: Translation;
+	};
 }
 
 // Constants
@@ -159,6 +168,36 @@ export const translations: Translations = {
 		imprintLink: {
 			en: "Legal Notice",
 			de: "Impressum",
+		},
+	},
+	welcome: {
+		successBadge: {
+			en: "Extension Successfully Installed!",
+			de: "Extension erfolgreich installiert!",
+		},
+		pageTitle: {
+			en: "Welcome to WatchThis!",
+			de: "Willkommen bei WatchThis!",
+		},
+		subtitle: {
+			en: "You're all set! Let's get you started with sharing YouTube videos the easy way.",
+			de: "Alles bereit! Lass uns damit beginnen, YouTube-Videos ganz einfach zu teilen.",
+		},
+		donationHeading: {
+			en: "Support WatchThis!",
+			de: "Unterstütze WatchThis!",
+		},
+		donationDescription: {
+			en: "WatchThis! is completely free. If you enjoy using the extension and want to support its development, consider leaving a donation. Every contribution helps keep the project alive and growing!",
+			de: "WatchThis! ist komplett kostenlos. Wenn du die Extension gerne nutzt und ihre Entwicklung unterstützen möchtest, freue ich mich über eine Spende. Jeder Beitrag hilft, das Projekt am Leben zu erhalten und wachsen zu lassen!",
+		},
+		ctaButton: {
+			en: "Support on Ko-fi",
+			de: "Auf Ko-fi unterstützen",
+		},
+		thankYouNote: {
+			en: "Thank you for your support! 🙏",
+			de: "Vielen Dank für deine Unterstützung! 🙏",
 		},
 	},
 };

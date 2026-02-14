@@ -1,6 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
+import { translations } from "../utils/translations";
+
+const t = translations.welcome;
 ---
 
 <Layout>
@@ -13,18 +16,43 @@ import { Icon } from "astro-icon/components";
 				class="inline-flex items-center justify-center mb-6 px-4 py-2 bg-green-50 rounded-full border border-green-200"
 			>
 				<Icon name="lucide:check" class="w-5 h-5 mr-2 text-green-600" />
-				<span class="text-green-700 font-semibold"
+				<!-- English Badge -->
+				<span data-lang-en class="text-green-700 font-semibold"
 					>Extension Successfully Installed!</span
 				>
+				<!-- German Badge -->
+				<span data-lang-de class="text-green-700 font-semibold hidden"
+					>{t.successBadge.de}</span
+				>
 			</div>
+			<!-- English Title -->
 			<h1
+				data-lang-en
 				class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight"
 			>
 				Welcome to <span class="text-primary">WatchThis!</span>
 			</h1>
-			<p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+			<!-- German Title -->
+			<h1
+				data-lang-de
+				class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight hidden"
+			>
+				Willkommen bei <span class="text-primary">WatchThis!</span>
+			</h1>
+			<!-- English Subtitle -->
+			<p
+				data-lang-en
+				class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
+			>
 				You're all set! Let's get you started with sharing YouTube videos the
 				easy way.
+			</p>
+			<!-- German Subtitle -->
+			<p
+				data-lang-de
+				class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed hidden"
+			>
+				{t.subtitle.de}
 			</p>
 		</div>
 	</section>
@@ -46,15 +74,35 @@ import { Icon } from "astro-icon/components";
 					</div>
 
 					<!-- Content -->
+					<!-- English Heading -->
 					<h2
+						data-lang-en
 						class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-center"
 					>
 						Support WatchThis!
 					</h2>
-					<p class="text-lg text-gray-600 mb-8 text-center leading-relaxed">
+					<!-- German Heading -->
+					<h2
+						data-lang-de
+						class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-center hidden"
+					>
+						{t.donationHeading.de}
+					</h2>
+					<!-- English Description -->
+					<p
+						data-lang-en
+						class="text-lg text-gray-600 mb-8 text-center leading-relaxed"
+					>
 						WatchThis! is completely free. If you enjoy using the extension and
 						want to support its development, consider leaving a donation. Every
 						contribution helps keep the project alive and growing!
+					</p>
+					<!-- German Description -->
+					<p
+						data-lang-de
+						class="text-lg text-gray-600 mb-8 text-center leading-relaxed hidden"
+					>
+						{t.donationDescription.de}
 					</p>
 
 					<!-- Donation Button -->
@@ -66,16 +114,38 @@ import { Icon } from "astro-icon/components";
 							class="inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-primary hover:bg-primary-hover rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
 						>
 							<Icon name="simple-icons:kofi" class="w-6 h-6" />
-							Support on Ko-fi
+							<!-- English Button -->
+							<span data-lang-en>Support on Ko-fi</span>
+							<!-- German Button -->
+							<span data-lang-de class="hidden">{t.ctaButton.de}</span>
 						</a>
 					</div>
 
 					<!-- Thank You Note -->
-					<p class="text-sm text-gray-500 mt-8 text-center">
+					<!-- English Thank You -->
+					<p data-lang-en class="text-sm text-gray-500 mt-8 text-center">
 						Thank you for your support! 🙏
+					</p>
+					<!-- German Thank You -->
+					<p data-lang-de class="text-sm text-gray-500 mt-8 text-center hidden">
+						{t.thankYouNote.de}
 					</p>
 				</div>
 			</div>
 		</div>
 	</section>
 </Layout>
+
+<script>
+	import { getSavedLanguage, toggleLanguage } from "../utils/translations";
+
+	// Listen to language change events from LanguageToggle
+	window.addEventListener("languageChanged", ((event: CustomEvent) => {
+		const { lang } = event.detail;
+		toggleLanguage(lang);
+	}) as EventListener);
+
+	// Set initial state
+	const currentLang = getSavedLanguage();
+	toggleLanguage(currentLang);
+</script>
