@@ -1,5 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
+import { translations } from "../utils/translations";
+
+const t = translations.pricing;
 ---
 
 <section
@@ -7,21 +10,56 @@ import { Icon } from "astro-icon/components";
 	class="py-24 bg-gradient-to-br from-primary via-primary to-primary-hover"
 >
 	<div class="container text-center">
-		<h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">
+		<!-- English Heading -->
+		<h2 data-lang-en class="text-4xl sm:text-5xl font-bold text-white mb-6">
 			Community Funded & Open Source
 		</h2>
+		<!-- German Heading -->
+		<h2
+			data-lang-de
+			class="text-4xl sm:text-5xl font-bold text-white mb-6 hidden"
+		>
+			{t.heading.de}
+		</h2>
 
-		<p class="text-lg text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed">
+		<!-- English Description -->
+		<p
+			data-lang-en
+			class="text-lg text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed"
+		>
 			WatchThis! is completely free to use. I believe great tools should be
 			accessible to everyone. The project is supported by my community through
 			voluntary donations.
 		</p>
+		<!-- German Description -->
+		<p
+			data-lang-de
+			class="text-lg text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed hidden"
+		>
+			{t.description.de}
+		</p>
 
-		<p class="text-base text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
+		<!-- English Future Note -->
+		<p
+			data-lang-en
+			class="text-base text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed"
+		>
 			If community funding isn't enough to cover hosting costs, a Pro tier might
 			be introduced in the future — but there will <strong class="text-white"
 				>always</strong
 			> be a generous free tier!
+		</p>
+		<!-- German Future Note -->
+		<p
+			data-lang-de
+			class="text-base text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed hidden"
+		>
+			{
+				t.futureNote.de.replace(
+					"immer",
+					"<strong class='text-white'>immer</strong>",
+				)
+			}
 		</p>
 
 		<!-- CTA Buttons -->
@@ -32,7 +70,10 @@ import { Icon } from "astro-icon/components";
 				class="inline-flex items-center justify-center px-8 py-4 bg-white text-primary font-semibold rounded-2xl shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
 			>
 				<Icon name="lucide:heart" class="w-5 h-5 mr-2" />
-				Support WatchThis! with your donation
+				<!-- English CTA -->
+				<span data-lang-en>Support WatchThis! with your donation</span>
+				<!-- German CTA -->
+				<span data-lang-de class="hidden">{t.ctaDonate.de}</span>
 			</a>
 			<a
 				href="https://github.com/l2xu/watch-this"
@@ -40,8 +81,25 @@ import { Icon } from "astro-icon/components";
 				class="inline-flex items-center justify-center px-6 py-3 bg-white/10 text-white font-medium rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-0.5"
 			>
 				<Icon name="simple-icons:github" class="w-5 h-5 mr-2" />
-				View on GitHub
+				<!-- English CTA -->
+				<span data-lang-en>View on GitHub</span>
+				<!-- German CTA -->
+				<span data-lang-de class="hidden">{t.ctaGithub.de}</span>
 			</a>
 		</div>
 	</div>
 </section>
+
+<script>
+	import { getSavedLanguage, toggleLanguage } from "../utils/translations";
+
+	// Listen to language change events from LanguageToggle
+	window.addEventListener("languageChanged", ((event: CustomEvent) => {
+		const { lang } = event.detail;
+		toggleLanguage(lang);
+	}) as EventListener);
+
+	// Set initial state
+	const currentLang = getSavedLanguage();
+	toggleLanguage(currentLang);
+</script>

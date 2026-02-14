@@ -1,38 +1,28 @@
 ---
 import { Icon } from "astro-icon/components";
+import { translations } from "../utils/translations";
 
-const faqs = [
-	{
-		question: "How does WatchThis! work?",
-		answer:
-			"WatchThis! is a simple browser extension that adds a 'Recommend' button to every YouTube video. When you click it, you can select friends from your list, and the video will appear as a recommendation on their YouTube homepage the next time they visit. It's like a personal video suggestion from you!",
-	},
-	{
-		question: "Is my data safe and private?",
-		answer:
-			"Absolutely! I take privacy seriously. WatchThis! only stores the minimal data needed to deliver recommendations. I never track your viewing habits, and all data is encrypted. Since it's open-source, you can verify this yourself by checking the code on GitHub.",
-	},
-	{
-		question: "Which browsers are supported?",
-		answer:
-			"WatchThis! currently supports all Chromium-based browsers including Google Chrome, Microsoft Edge, Brave, and Opera. Firefox support is coming soon! Make sure you have the latest version of your browser for the best experience.",
-	},
-	{
-		question: "How do I add friends to share videos with?",
-		answer:
-			"After installing the extension, click the WatchThis! icon in your browser toolbar. You can add friends by sharing a unique invite link with them. Once they accept and install the extension, you'll be connected and can start sharing videos instantly!",
-	},
-];
+const t = translations.faqs;
+const faqs = t.items;
 ---
 
 <section id="faq" class="py-20 bg-gradient-to-b from-gray-50/30 to-white">
 	<div class="container max-w-3xl">
 		<!-- Section Header -->
 		<div class="text-center mb-12">
-			<h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+			<!-- English Heading -->
+			<h2 data-lang-en class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
 				Frequently Asked Questions
 			</h2>
-			<p class="text-lg text-gray-600">Got questions? I've got answers.</p>
+			<!-- German Heading -->
+			<h2 data-lang-de class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 hidden">
+				{t.sectionHeading.de}
+			</h2>
+			
+			<!-- English Subheading -->
+			<p data-lang-en class="text-lg text-gray-600">Got questions? I've got answers.</p>
+			<!-- German Subheading -->
+			<p data-lang-de class="text-lg text-gray-600 hidden">{t.sectionSubheading.de}</p>
 		</div>
 
 		<!-- FAQ Accordion -->
@@ -46,7 +36,10 @@ const faqs = [
 							data-index={index}
 						>
 							<span class="font-semibold text-gray-900 pr-4">
-								{faq.question}
+								<!-- English Question -->
+								<span data-lang-en>{faq.question.en}</span>
+								<!-- German Question -->
+								<span data-lang-de class="hidden">{faq.question.de}</span>
 							</span>
 							<span class="faq-icon flex-shrink-0 w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center transition-all duration-300">
 								<Icon
@@ -57,7 +50,10 @@ const faqs = [
 						</button>
 						<div class="accordion-content">
 							<div class="px-6 pb-5 pt-0">
-								<p class="text-gray-600 leading-relaxed">{faq.answer}</p>
+								<!-- English Answer -->
+								<p data-lang-en class="text-gray-600 leading-relaxed">{faq.answer.en}</p>
+								<!-- German Answer -->
+								<p data-lang-de class="text-gray-600 leading-relaxed hidden">{faq.answer.de}</p>
 							</div>
 						</div>
 					</div>
@@ -104,4 +100,17 @@ const faqs = [
 			}
 		});
 	});
+
+	// Language toggle functionality
+	import { getSavedLanguage, toggleLanguage } from "../utils/translations";
+
+	// Listen to language change events from LanguageToggle
+	window.addEventListener("languageChanged", ((event: CustomEvent) => {
+		const { lang } = event.detail;
+		toggleLanguage(lang);
+	}) as EventListener);
+
+	// Set initial state
+	const currentLang = getSavedLanguage();
+	toggleLanguage(currentLang);
 </script>

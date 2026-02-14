@@ -5,26 +5,6 @@ import Layout from "../layouts/Layout.astro";
 <Layout>
 	<section class="pt-32 pb-20">
 		<div class="container max-w-3xl">
-			<!-- Language Toggle -->
-			<div class="flex justify-end mb-8">
-				<div
-					class="inline-flex rounded-lg border border-gray-200 p-1 bg-gray-50"
-				>
-					<button
-						id="lang-en"
-						class="lang-btn px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-gray-900 shadow-sm"
-					>
-						English
-					</button>
-					<button
-						id="lang-de"
-						class="lang-btn px-4 py-2 text-sm font-medium rounded-md transition-colors text-gray-500 hover:text-gray-700"
-					>
-						Deutsch
-					</button>
-				</div>
-			</div>
-
 			<!-- German Version -->
 			<article id="content-de" class="prose hidden">
 				<h1 class="text-3xl font-bold text-gray-900 mb-8">
@@ -319,36 +299,37 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <script>
-	const langDe = document.getElementById("lang-de");
-	const langEn = document.getElementById("lang-en");
+	import { LANG_KEY, getSavedLanguage } from "../utils/translations";
+
 	const contentDe = document.getElementById("content-de");
 	const contentEn = document.getElementById("content-en");
 
-	function setLanguage(lang: "de" | "en") {
+	// Migrate old privacy-lang to new unified key
+	try {
+		const oldLang = localStorage.getItem("privacy-lang");
+		if (oldLang && !localStorage.getItem(LANG_KEY)) {
+			localStorage.setItem(LANG_KEY, oldLang);
+			localStorage.removeItem("privacy-lang");
+		}
+	} catch {}
+
+	function toggleContent(lang: "de" | "en") {
 		if (lang === "de") {
 			contentDe?.classList.remove("hidden");
 			contentEn?.classList.add("hidden");
-			langDe?.classList.add("bg-white", "text-gray-900", "shadow-sm");
-			langDe?.classList.remove("text-gray-500", "hover:text-gray-700");
-			langEn?.classList.remove("bg-white", "text-gray-900", "shadow-sm");
-			langEn?.classList.add("text-gray-500", "hover:text-gray-700");
 		} else {
 			contentDe?.classList.add("hidden");
 			contentEn?.classList.remove("hidden");
-			langEn?.classList.add("bg-white", "text-gray-900", "shadow-sm");
-			langEn?.classList.remove("text-gray-500", "hover:text-gray-700");
-			langDe?.classList.remove("bg-white", "text-gray-900", "shadow-sm");
-			langDe?.classList.add("text-gray-500", "hover:text-gray-700");
 		}
-		localStorage.setItem("privacy-lang", lang);
 	}
 
-	langDe?.addEventListener("click", () => setLanguage("de"));
-	langEn?.addEventListener("click", () => setLanguage("en"));
+	// Listen to language change events from LanguageToggle
+	window.addEventListener("languageChanged", ((event: CustomEvent) => {
+		const { lang } = event.detail;
+		toggleContent(lang);
+	}) as EventListener);
 
-	// Check for saved preference
-	const savedLang = localStorage.getItem("privacy-lang") as "de" | "en" | null;
-	if (savedLang) {
-		setLanguage(savedLang);
-	}
+	// Set initial state
+	const currentLang = getSavedLanguage();
+	toggleContent(currentLang);
 </script>

@@ -13,6 +13,20 @@ import Footer from "../components/Footer.astro";
 			content="WatchThis! - Recommend YouTube Videos directly to your friends so they see them on their startpage."
 		/>
 		<title>WatchThis! - Share YouTube Videos with Friends</title>
+
+		<!-- FOUC Prevention: Set language before body renders -->
+		<script is:inline>
+			// Executes immediately, before first paint
+			const lang = localStorage.getItem("watchthis-lang") || "en";
+			document.documentElement.setAttribute("data-lang", lang);
+
+			// Hide opposite language content immediately to prevent FOUC
+			const oppositeLanguage = lang === "en" ? "de" : "en";
+			const style = document.createElement("style");
+			style.id = "lang-fouc-prevention";
+			style.textContent = `[data-lang-${oppositeLanguage}] { display: none !important; }`;
+			document.head.appendChild(style);
+		</script>
 	</head>
 	<body class="antialiased">
 		<Navbar />

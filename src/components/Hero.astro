@@ -1,5 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
+import { translations } from "../utils/translations";
+
+const t = translations.hero;
 ---
 
 <section class="pt-32 pb-20 bg-linear-to-b from-white via-white to-gray-50/50">
@@ -7,21 +10,50 @@ import { Icon } from "astro-icon/components";
 		<div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 			<!-- Left Column - Content -->
 			<div class="order-2 lg:order-1">
+				<!-- English Title -->
 				<h1
+					data-lang-en
 					class="text-4xl sm:text-5xl lg:text-5xl font-bold text-gray-900 leading-[1.1] mb-6"
 				>
 					Recommend <span class="text-primary">YouTube</span> Videos directly to your
 					friends
 					<span class="text-primary">Feed</span>.
 				</h1>
-				<p class="text-lg text-gray-600 mb-8 leading-relaxed">
+				<!-- German Title -->
+				<h1
+					data-lang-de
+					class="text-4xl sm:text-5xl lg:text-5xl font-bold text-gray-900 leading-[1.1] mb-6 hidden"
+				>
+					Empfiehl <span class="text-primary">YouTube</span>-Videos direkt im <span
+						class="text-primary">Feed</span
+					> deiner Freunde.
+				</h1>
+
+				<!-- English Description -->
+				<p data-lang-en class="text-lg text-gray-600 mb-8 leading-relaxed">
 					Tired of sharing YouTube links through clunky messages? WatchThis!
 					lets you share your favorite videos with a single click, displaying
 					them right on your friends' feed for easy access and viewing.
 				</p>
+				<!-- German Description -->
+				<p
+					data-lang-de
+					class="text-lg text-gray-600 mb-8 leading-relaxed hidden"
+				>
+					{t.description.de}
+				</p>
+
 				<div class="mb-4">
-					<h2 class="text-xl font-semibold text-gray-900 mb-4">
+					<!-- English Heading -->
+					<h2 data-lang-en class="text-xl font-semibold text-gray-900 mb-4">
 						Get the Extension
+					</h2>
+					<!-- German Heading -->
+					<h2
+						data-lang-de
+						class="text-xl font-semibold text-gray-900 mb-4 hidden"
+					>
+						{t.installHeading.de}
 					</h2>
 				</div>
 				<div class="flex flex-col sm:flex-row gap-4">
@@ -32,7 +64,7 @@ import { Icon } from "astro-icon/components";
 						class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
 					>
 						<Icon name="simple-icons:googlechrome" class="w-5 h-5 mr-2" />
-						Chrome Web Store
+						{t.ctaChrome.en}
 					</a>
 					<a
 						href="https://addons.mozilla.org/de/firefox/addon/watchthis/"
@@ -41,7 +73,7 @@ import { Icon } from "astro-icon/components";
 						class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
 					>
 						<Icon name="simple-icons:firefox" class="w-5 h-5 mr-2" />
-						Firefox Add-ons
+						{t.ctaFirefox.en}
 					</a>
 				</div>
 			</div>
@@ -89,3 +121,17 @@ import { Icon } from "astro-icon/components";
 		</div>
 	</div>
 </section>
+
+<script>
+	import { getSavedLanguage, toggleLanguage } from "../utils/translations";
+
+	// Listen to language change events from LanguageToggle
+	window.addEventListener("languageChanged", ((event: CustomEvent) => {
+		const { lang } = event.detail;
+		toggleLanguage(lang);
+	}) as EventListener);
+
+	// Set initial state
+	const currentLang = getSavedLanguage();
+	toggleLanguage(currentLang);
+</script>

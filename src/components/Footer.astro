@@ -1,7 +1,9 @@
 ---
 import { Icon } from "astro-icon/components";
+import { translations } from "../utils/translations";
 
 const currentYear = new Date().getFullYear();
+const t = translations.footer;
 
 const socialLinks = [
 	{
@@ -42,9 +44,15 @@ const socialLinks = [
 					/>
 					<span class="text-2xl font-bold text-white">WatchThis!</span>
 				</a>
-				<p class="text-white/80 leading-relaxed">
+				<!-- English Tagline -->
+				<p data-lang-en class="text-white/80 leading-relaxed">
 					Share your favorite YouTube videos directly with friends.<br /> Free and
 					privacy-focused.
+				</p>
+				<!-- German Tagline -->
+				<p data-lang-de class="text-white/80 leading-relaxed hidden">
+					{t.tagline.de.split(". ")[0]}.<br />
+					{t.tagline.de.split(". ")[1]}
 				</p>
 			</div>
 
@@ -89,28 +97,45 @@ const socialLinks = [
 				</div>
 			</div>
 		</div>
+		<!-- English Copyright -->
+		<p data-lang-en class="text-white/70 text-sm">
+			© {currentYear} WatchThis! All rights reserved.
+		</p>
+		<!-- German Copyright -->
+		<p data-lang-de class="text-white/70 text-sm hidden">
+			© {currentYear}
+			{t.copyright.de}
+		</p>
 
-		<!-- Bottom Bar -->
-		<div
-			class="pt-8 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4"
-		>
-			<p class="text-white/70 text-sm">
-				© {currentYear} WatchThis! All rights reserved.
-			</p>
-			<div class="flex items-center gap-6 text-sm">
-				<a
-					href="/datenschutz"
-					class="text-white/70 hover:text-white transition-colors"
-				>
-					Privacy Policy / Datenschutzerklärung
-				</a>
-				<a
-					href="/impressum"
-					class="text-white/70 hover:text-white transition-colors"
-				>
-					Legal Notice / Impressum
-				</a>
-			</div>
+		<div class="flex items-center gap-6 text-sm">
+			<a
+				href="/datenschutz"
+				class="text-white/70 hover:text-white transition-colors"
+			>
+				<span data-lang-en>{t.privacyLink.en}</span>
+				<span data-lang-de class="hidden">{t.privacyLink.de}</span>
+			</a>
+			<a
+				href="/impressum"
+				class="text-white/70 hover:text-white transition-colors"
+			>
+				<span data-lang-en>{t.imprintLink.en}</span>
+				<span data-lang-de class="hidden">{t.imprintLink.de}</span>
+			</a>
 		</div>
 	</div>
 </footer>
+
+<script>
+	import { getSavedLanguage, toggleLanguage } from "../utils/translations";
+
+	// Listen to language change events from LanguageToggle
+	window.addEventListener("languageChanged", ((event: CustomEvent) => {
+		const { lang } = event.detail;
+		toggleLanguage(lang);
+	}) as EventListener);
+
+	// Set initial state
+	const currentLang = getSavedLanguage();
+	toggleLanguage(currentLang);
+</script>

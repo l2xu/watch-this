@@ -1,0 +1,138 @@
+---
+// Language toggle component for switching between English and German
+// Used in Navbar and legal pages for consistent language switching
+---
+
+<div class="inline-flex">
+	<button
+		id="lang-en"
+		class="lang-btn px-3 py-2 text-2xl rounded-md transition-colors"
+		aria-label="Switch to English"
+		title="English"
+		lang="en"
+	>
+		🇬🇧
+	</button>
+	<button
+		id="lang-de"
+		class="lang-btn px-3 py-2 text-2xl rounded-md transition-colors"
+		aria-label="Switch to German"
+		title="Deutsch"
+		lang="de"
+	>
+		🇩🇪
+	</button>
+</div>
+
+<!-- Screen reader announcement for language changes -->
+<div
+	role="status"
+	aria-live="polite"
+	aria-atomic="true"
+	class="sr-only"
+	id="lang-announcement"
+>
+	<!-- Updated via JavaScript when language changes -->
+</div>
+
+<script>
+	import {
+		LANG_KEY,
+		DEFAULT_LANG,
+		saveLanguage,
+		toggleLanguage,
+		type Language,
+	} from "../utils/translations";
+
+	function initLanguageToggle() {
+		const btnEn = document.getElementById("lang-en") as HTMLButtonElement;
+		const btnDe = document.getElementById("lang-de") as HTMLButtonElement;
+		const announcement = document.getElementById("lang-announcement");
+
+		if (!btnEn || !btnDe) return;
+
+		// Get saved language preference or default
+		let currentLang: Language = DEFAULT_LANG;
+		try {
+			const saved = localStorage.getItem(LANG_KEY);
+			currentLang = saved === "en" || saved === "de" ? saved : DEFAULT_LANG;
+		} catch {
+			// localStorage not available
+		}
+
+		// Update toggle UI to reflect current language
+		function updateToggleUI(lang: Language) {
+			const isEnglish = lang === "en";
+
+			// Show only the opposite language flag
+			if (isEnglish) {
+				// Currently English, show German flag to switch
+				btnEn.classList.add("hidden");
+				btnDe.classList.remove("hidden");
+			} else {
+				// Currently German, show English flag to switch
+				btnEn.classList.remove("hidden");
+				btnDe.classList.add("hidden");
+			}
+		}
+
+		// Set initial state
+		updateToggleUI(currentLang);
+
+		// Handle language switch
+		function switchLanguage(newLang: Language) {
+			const previousLang = currentLang;
+			if (newLang === previousLang) return;
+
+			currentLang = newLang;
+
+			// Save preference and update DOM
+			saveLanguage(newLang);
+
+			// Toggle content visibility
+			toggleLanguage(newLang);
+
+			// Update toggle UI
+			updateToggleUI(newLang);
+
+			// Screen reader announcement
+			if (announcement) {
+				announcement.textContent = `Language changed to ${newLang === "en" ? "English" : "German"}`;
+			}
+
+			// Dispatch custom event for other components to listen
+			const event = new CustomEvent("languageChanged", {
+				detail: { lang: newLang, previousLang },
+				bubbles: true,
+			});
+			window.dispatchEvent(event);
+		}
+
+		// Event listeners
+		btnEn.addEventListener("click", () => switchLanguage("en"));
+		btnDe.addEventListener("click", () => switchLanguage("de"));
+
+		// Keyboard support (already handled by native button elements)
+	}
+
+	// Initialize on DOM ready
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initLanguageToggle);
+	} else {
+		initLanguageToggle();
+	}
+</script>
+
+<style>
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
+	}
+</style>

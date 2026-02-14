@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LanguageToggle from "./LanguageToggle.astro";
 ---
 
 <nav
@@ -19,7 +20,7 @@ import { Icon } from "astro-icon/components";
 				>
 			</a>
 
-			<!-- Store & GitHub Links -->
+			<!-- Store & GitHub Links & Language Toggle -->
 			<div class="flex items-center gap-4">
 				<a
 					href="https://chromewebstore.google.com/detail/watchthis/hbpkmdcgckbogdkkepcnmgankbbjjlha"
@@ -51,6 +52,9 @@ import { Icon } from "astro-icon/components";
 				>
 					<Icon name="simple-icons:github" class="w-6 h-6 text-gray-700" />
 				</a>
+
+				<!-- Language Toggle -->
+				<LanguageToggle />
 			</div>
 		</div>
 	</div>

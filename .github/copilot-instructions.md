@@ -95,6 +95,101 @@ import Hero from "../components/Hero.astro";
 - Legal pages (datenschutz, impressum) are separate routes
 - Mobile menu uses slide-in drawer with overlay (see [Navbar.astro](src/components/Navbar.astro))
 
+## Internationalization (i18n)
+
+### Language Support
+
+Site supports **English (default)** and **German** with client-side language switching.
+
+### Translation System Architecture
+
+**Centralized Translations**: All content in [src/utils/translations.ts](src/utils/translations.ts)
+
+```typescript
+export const translations = {
+	hero: {
+		title: { en: "...", de: "..." },
+		description: { en: "...", de: "..." },
+	},
+	pricing: {
+		/* ... */
+	},
+	faqs: {
+		/* ... */
+	},
+	footer: {
+		/* ... */
+	},
+};
+```
+
+**Storage**: localStorage key `watchthis-lang` (values: `'en'` | `'de'`)
+
+### Implementation Pattern
+
+**Dual-Content Rendering** (Preferred for static content):
+
+```astro
+---
+import { translations } from '../utils/translations';
+const t = translations.hero;
+---
+
+<h1 data-lang-en class="...">English Title</h1>
+<h1 data-lang-de class="... hidden">{t.title.de}</h1>
+
+<script>
+  window.addEventListener('languageChanged', (event) => {
+    const { lang } = event.detail;
+    // Toggle .hidden class on data-lang-* elements
+  });
+</script>
+```
+
+**Data Attributes**:
+
+- `data-lang-en` - Marks English content
+- `data-lang-de` - Marks German content
+- `data-lang` - Set on `<html>` element (current language)
+
+**Language Toggle**:
+
+- Component: [src/components/LanguageToggle.astro](src/components/LanguageToggle.astro)
+- Location: Navbar top-right
+- Dispatches `languageChanged` custom event on change
+- All components listen to this event and update visibility
+
+**FOUC Prevention**:
+Inline script in [Layout.astro](src/layouts/Layout.astro) `<head>`:
+
+```html
+<script is:inline>
+	const lang = localStorage.getItem("watchthis-lang") || "en";
+	document.documentElement.setAttribute("data-lang", lang);
+	if (lang === "de") {
+		// Hide English content immediately
+		const style = document.createElement("style");
+		style.textContent = "[data-lang-en] { display: none !important; }";
+		document.head.appendChild(style);
+	}
+</script>
+```
+
+### Adding Translatable Content
+
+1. Add translation key to `translations.ts`
+2. Render both language versions with appropriate `data-lang-*` attributes
+3. Add `.hidden` class to non-default language
+4. Event listener automatically handles toggling (no additional JS needed)
+
+### Guidelines
+
+- **Brand name** "WatchThis!" never translated
+- **Store names** (Chrome Web Store, Firefox Add-ons) remain in English
+- **Icon labels** don't need translation (use `aria-label` for accessibility)
+- Use `hidden` class from Tailwind (not `display: none` inline styles)
+- Test content length differences (German often 20-30% longer)
+
 ## Styling Conventions
 
 ### Tailwind v4 Custom Theme
@@ -185,7 +280,7 @@ For toggles (mobile menu, accordions, language switch):
 - Primary color: Red (#c21c1c)
 - Logo: `/logo.png` in public folder
 - Business model: Free with donation support (Ko-fi link in Pricing section)
-- Legal: Dual-language toggle on datenschutz/impressum pages (German/English)
+- Languages: English (default) and German with site-wide toggle (see Internationalization section)
 
 ## Common Patterns to Follow
 
