@@ -22,6 +22,9 @@ interface DashboardProps {
 	onLogout: () => void;
 }
 
+const manifest = browser.runtime.getManifest();
+const version = manifest.version;
+
 export default function Dashboard({ user, onLogout }: DashboardProps) {
 	const [currentView, setCurrentView] = useState<DashboardView>("inbox");
 
@@ -161,7 +164,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 		<div className="space-y-4">
 			{/* User Info */}
 			<div className="p-4 bg-gray-50 rounded-lg">
-				<p className="text-sm text-gray-500">Logged in as</p>
+				<p className="text-sm text-gray-500">Logged in as </p>
 				<p className="font-semibold text-gray-800">{user.username}</p>
 			</div>
 
@@ -275,6 +278,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 						<span className="text-xs">Support</span>
 					</button>
 				</div>
+			</div>
+			<div className="text-center text-xs text-gray-500 mt-4">
+				Version {version}
 			</div>
 		</div>
 	);
