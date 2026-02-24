@@ -389,7 +389,15 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 																	alt={rec.meta?.title || "Video thumbnail"}
 																	className="w-full h-full object-cover group-hover:scale-105 transition-transform"
 																/>
-															)}
+															)}{" "}
+															{/* Message overlay on hover */}
+															{rec.message && (
+																<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 backdrop-blur-md bg-black/60 flex items-center justify-center p-4">
+																	<p className="text-white text-sm text-center leading-relaxed max-h-full overflow-y-auto">
+																		{rec.message}
+																	</p>
+																</div>
+															)}{" "}
 															{/* NEW badge */}
 															<span className="absolute top-2 left-2 bg-primary-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
 																NEW
@@ -450,7 +458,15 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 																	alt={rec.meta?.title || "Video thumbnail"}
 																	className="w-full h-full object-cover group-hover:scale-105 transition-transform"
 																/>
-															)}
+															)}{" "}
+															{/* Message overlay on hover */}
+															{rec.message && (
+																<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 backdrop-blur-md bg-black/60 flex items-center justify-center p-4">
+																	<p className="text-white text-sm text-center leading-relaxed max-h-full overflow-y-auto">
+																		{rec.message}
+																	</p>
+																</div>
+															)}{" "}
 															{/* From badge */}
 															<span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded">
 																From:{" "}

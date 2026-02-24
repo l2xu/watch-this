@@ -2,6 +2,7 @@ import type { User } from "../../types";
 import { sendMessage, secondsToMmSs, mmSsToSeconds } from "./utils";
 import { browser } from "wxt/browser";
 import { createStyleElement, getSharedStyles } from "./shared-styles";
+import { validateMessage } from "../../lib/validation";
 
 // Video page specific styles
 const videoPageStyles = `
@@ -370,6 +371,45 @@ async function showRecommendModal() {
 		modal.appendChild(timestampRow);
 	}
 
+	// Message section (optional)
+	let messageTextarea: HTMLTextAreaElement | null = null;
+	let charCounter: HTMLDivElement | null = null;
+
+	{
+		const messageSection = document.createElement("div");
+		messageSection.className = "watchthis-message-section";
+
+		const messageLabel = document.createElement("label");
+		messageLabel.textContent = "Message (optional):";
+		messageLabel.className = "watchthis-message-label";
+
+		messageTextarea = document.createElement("textarea");
+		messageTextarea.className = "watchthis-message-input";
+		messageTextarea.placeholder = "Add a message... (max. 280 characters)";
+		messageTextarea.maxLength = 280;
+		messageTextarea.rows = 3;
+
+		charCounter = document.createElement("div");
+		charCounter.className = "watchthis-char-counter";
+		charCounter.textContent = "0/280";
+
+		// Character counter update
+		messageTextarea.addEventListener("input", () => {
+			const length = messageTextarea!.value.length;
+			charCounter!.textContent = `${length}/280`;
+			if (length > 260) {
+				charCounter!.style.color = "#cc0000";
+			} else {
+				charCounter!.style.color = "";
+			}
+		});
+
+		messageSection.appendChild(messageLabel);
+		messageSection.appendChild(messageTextarea);
+		messageSection.appendChild(charCounter);
+		modal.appendChild(messageSection);
+	}
+
 	// Create message div
 	const messageDiv = document.createElement("div");
 	messageDiv.id = "watchthis-modal-message";
@@ -441,11 +481,28 @@ async function showRecommendModal() {
 			timestampSeconds = parsed;
 		}
 
+		// Get message if provided and validate it
+		const message = messageTextarea?.value.trim() || undefined;
+		if (message) {
+			const validation = validateMessage(message);
+			if (!validation.valid) {
+				messageDiv.innerHTML = "";
+				const errorDiv = document.createElement("div");
+				errorDiv.className = "watchthis-message watchthis-message-error";
+				errorDiv.textContent = validation.error || "Invalid message";
+				messageDiv.appendChild(errorDiv);
+				sendBtn.disabled = false;
+				sendBtn.textContent = "Send";
+				return;
+			}
+		}
+
 		const result = await sendMessage({
 			type: "sendRecommendation",
 			receiverIds: Array.from(selectedFriends),
 			url: window.location.href,
 			timestampSeconds,
+			message,
 		});
 
 		if (result.success) {

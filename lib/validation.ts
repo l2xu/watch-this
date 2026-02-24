@@ -55,3 +55,35 @@ export function sanitizeYouTubeUrl(
 		return null;
 	}
 }
+
+/**
+ * Validate a message for a video recommendation.
+ * Maximum 280 characters allowed.
+ * Secure pattern: blocks dangerous control characters (null bytes, control chars)
+ * but allows normal text, Unicode, emojis, line breaks (\n, \r, \t).
+ */
+export function validateMessage(message: string): {
+	valid: boolean;
+	error?: string;
+} {
+	if (!message || message.trim().length === 0) {
+		return { valid: true }; // Empty messages are allowed
+	}
+	if (message.length > 280) {
+		return {
+			valid: false,
+			error: "Message must be 280 characters or less",
+		};
+	}
+	// Secure pattern: blocks control characters except \t, \n, \r (safe whitespace)
+	// Blocks: \x00 (null), \x01-\x08, \x0B-\x0C, \x0E-\x1F (control chars), \x7F (DEL)
+	// Allows: \x09 (tab), \x0A (newline), \x0D (carriage return), all Unicode
+	const pattern = /^[^\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]{0,280}$/;
+	if (!pattern.test(message)) {
+		return {
+			valid: false,
+			error: "Message contains invalid or dangerous characters",
+		};
+	}
+	return { valid: true };
+}

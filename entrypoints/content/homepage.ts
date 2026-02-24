@@ -94,13 +94,9 @@ const homepageStyles = `
 		max-width: var(--ytd-rich-grid-item-max-width, none);
 	}
 
-	.watchthis-card:hover {
-		transform: scale(1.02);
-	}
+	
 
-	.watchthis-card:hover .watchthis-thumbnail {
-		border-radius: 0;
-	}
+	
 
 	.watchthis-thumbnail {
 		position: relative;
@@ -109,7 +105,6 @@ const homepageStyles = `
 		background: transparent;
 		overflow: hidden;
 		border-radius: 12px;
-		transition: border-radius 0.2s ease;
 	}
 
 	.watchthis-thumbnail img {
@@ -128,6 +123,39 @@ const homepageStyles = `
 		border-radius: 4px;
 		font-size: 11px;
 		font-weight: 500;
+		font-family: "Roboto", "Arial", sans-serif;
+		z-index: 1;
+	}
+
+	.watchthis-message-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.75);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 16px;
+		opacity: 0;
+		transition: opacity 0.2s ease;
+		pointer-events: none;
+		z-index: 2;
+		border-radius: 12px;
+	}
+
+	.watchthis-card:hover .watchthis-message-overlay {
+		opacity: 1;
+	}
+
+	.watchthis-message-text {
+		color: white;
+		font-size: 14px;
+		line-height: 1.5;
+		text-align: center;
+		max-height: 100%;
+		overflow-y: auto;
+		margin: 0;
 		font-family: "Roboto", "Arial", sans-serif;
 	}
 
@@ -199,6 +227,21 @@ function createVideoCard(rec: RecommendationWithMeta): HTMLAnchorElement {
 	img.alt = title;
 	img.loading = "lazy";
 
+	thumbnail.appendChild(img);
+
+	// Message overlay (if message exists)
+	if (rec.message) {
+		const messageOverlay = document.createElement("div");
+		messageOverlay.className = "watchthis-message-overlay";
+
+		const messageText = document.createElement("p");
+		messageText.className = "watchthis-message-text";
+		messageText.textContent = rec.message; // XSS-safe: textContent
+
+		messageOverlay.appendChild(messageText);
+		thumbnail.appendChild(messageOverlay);
+	}
+
 	const badge = document.createElement("div");
 	badge.className = "watchthis-badge";
 	const timestamp = extractTimestampFromUrl(rec.url);
@@ -207,7 +250,6 @@ function createVideoCard(rec: RecommendationWithMeta): HTMLAnchorElement {
 			? `From ${sender} | Timestamp ${secondsToMmSs(timestamp)}`
 			: `From ${sender}`; // Safe from XSS
 
-	thumbnail.appendChild(img);
 	thumbnail.appendChild(badge);
 
 	const info = document.createElement("div");

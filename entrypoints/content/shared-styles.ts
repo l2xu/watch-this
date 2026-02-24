@@ -208,6 +208,57 @@ export const friendItemStyles = `
 	}
 `;
 
+// Message textarea styles for video modal
+export const messageInputStyles = `
+	.watchthis-message-section {
+		margin: 16px 0;
+		padding: 12px 0;
+		border-top: 1px solid var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1));
+	}
+
+	html:not([dark]) .watchthis-message-section {
+		border-top-color: rgba(0, 0, 0, 0.1);
+	}
+
+	.watchthis-message-label {
+		display: block;
+		font-size: 13px;
+		color: ${THEME_COLORS.textPrimary};
+		margin-bottom: 6px;
+		font-weight: 500;
+	}
+
+	.watchthis-message-input {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.2));
+		border-radius: 4px;
+		font-size: 13px;
+		font-family: "Roboto", "Arial", sans-serif;
+		resize: vertical;
+		min-height: 60px;
+		background: ${THEME_COLORS.baseBackground};
+		color: ${THEME_COLORS.textPrimary};
+		box-sizing: border-box;
+	}
+
+	html:not([dark]) .watchthis-message-input {
+		border-color: #ccc;
+	}
+
+	.watchthis-message-input:focus {
+		outline: none;
+		border-color: ${THEME_COLORS.primary};
+	}
+
+	.watchthis-char-counter {
+		text-align: right;
+		font-size: 11px;
+		color: ${THEME_COLORS.textSecondary};
+		margin-top: 4px;
+	}
+`;
+
 /**
  * Get all shared styles combined
  */
@@ -218,6 +269,7 @@ export function getSharedStyles(): string {
 		${loadingStyles}
 		${modalBaseStyles}
 		${friendItemStyles}
+		${messageInputStyles}
 	`;
 }
 

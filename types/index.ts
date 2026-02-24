@@ -36,6 +36,7 @@ export interface LinkRecommendation extends RecordModel {
 	receiver: string;
 	url: string;
 	seen: boolean;
+	message?: string;
 	// Expanded relations (when using expand parameter)
 	expand?: {
 		sender?: User;

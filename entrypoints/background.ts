@@ -17,6 +17,7 @@ export type BackgroundMessage =
 			receiverIds: string[];
 			url: string;
 			timestampSeconds?: number | null;
+			message?: string;
 	  };
 
 // Standard response type
@@ -103,6 +104,7 @@ async function handleMessage(
 					message.receiverIds,
 					message.url,
 					message.timestampSeconds,
+					message.message,
 				);
 				if (!result.success) throw new Error(result.error);
 				return { count: result.count };

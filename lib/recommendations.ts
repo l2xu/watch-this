@@ -1,5 +1,5 @@
 import pb from "./pocketbase";
-import { sanitizeYouTubeUrl } from "./validation";
+import { sanitizeYouTubeUrl, validateMessage } from "./validation";
 import type { User, LinkRecommendation } from "../types";
 
 /**
@@ -25,6 +25,7 @@ export async function sendRecommendations(
 	receiverIds: string[],
 	url: string,
 	timestampSeconds?: number | null,
+	message?: string,
 ): Promise<{ success: boolean; count?: number; error?: string }> {
 	try {
 		const currentUser = pb.authStore.model;
@@ -38,6 +39,14 @@ export async function sendRecommendations(
 
 		if (!url) {
 			return { success: false, error: "No URL to share" };
+		}
+
+		// Validate message if provided
+		if (message) {
+			const messageValidation = validateMessage(message);
+			if (!messageValidation.valid) {
+				return { success: false, error: messageValidation.error };
+			}
 		}
 
 		// Sanitize and validate the YouTube URL; optionally append timestamp
@@ -56,6 +65,7 @@ export async function sendRecommendations(
 				receiver: receiverId,
 				url: sanitizedUrl,
 				seen: false,
+				message: message?.trim() || undefined,
 			}),
 		);
 
