@@ -30,6 +30,9 @@ export interface FriendRequest extends RecordModel {
 	};
 }
 
+// Reaction options for video feedback
+export type ReactionType = "like" | "dislike";
+
 // Link recommendation type from PocketBase
 export interface LinkRecommendation extends RecordModel {
 	sender: string;
@@ -37,6 +40,7 @@ export interface LinkRecommendation extends RecordModel {
 	url: string;
 	seen: boolean;
 	message?: string;
+	reaction?: ReactionType | "";
 	// Expanded relations (when using expand parameter)
 	expand?: {
 		sender?: User;

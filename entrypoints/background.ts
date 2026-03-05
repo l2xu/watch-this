@@ -3,7 +3,10 @@ import {
 	getReceivedRecommendations,
 	markAsSeen,
 	sendRecommendations,
+	findRecommendationsByVideoId,
+	submitReaction,
 } from "../lib/recommendations";
+import type { ReactionType } from "../types";
 import { getFriends } from "../lib/friends";
 
 // Message types for communication between content scripts and background
@@ -18,6 +21,12 @@ export type BackgroundMessage =
 			url: string;
 			timestampSeconds?: number | null;
 			message?: string;
+	  }
+	| { type: "checkRecommendationForVideo"; videoId: string }
+	| {
+			type: "submitReaction";
+			recommendationIds: string[];
+			reaction: ReactionType | "";
 	  };
 
 // Standard response type
@@ -108,6 +117,23 @@ async function handleMessage(
 				);
 				if (!result.success) throw new Error(result.error);
 				return { count: result.count };
+			});
+
+		case "checkRecommendationForVideo":
+			return withAuth(async () => {
+				const result = await findRecommendationsByVideoId(message.videoId);
+				if (!result.success) throw new Error(result.error);
+				return { recommendations: result.recommendations };
+			});
+
+		case "submitReaction":
+			return withAuth(async () => {
+				const result = await submitReaction(
+					message.recommendationIds,
+					message.reaction,
+				);
+				if (!result.success) throw new Error(result.error);
+				return {};
 			});
 
 		default:

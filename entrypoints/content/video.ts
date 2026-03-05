@@ -1,5 +1,10 @@
-import type { User } from "../../types";
-import { sendMessage, secondsToMmSs, mmSsToSeconds } from "./utils";
+import type { User, ReactionType } from "../../types";
+import {
+	sendMessage,
+	secondsToMmSs,
+	mmSsToSeconds,
+	extractVideoId,
+} from "./utils";
 import { browser } from "wxt/browser";
 import { createStyleElement, getSharedStyles } from "./shared-styles";
 import { validateMessage } from "../../lib/validation";
@@ -150,6 +155,36 @@ const videoPageStyles = `
 
 	#watchthis-modal .watchthis-modal-actions {
 		margin-top: 20px;
+	}
+
+	/* Reaction banner */
+	#watchthis-reaction-banner {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		box-sizing: border-box;
+		background: var(--t7f4f2c6d54836ce0, #fff);
+		border-radius: 12px;
+		padding: 16px 20px;
+		margin: 12px 0;
+		font-family: "Roboto", "Arial", sans-serif;
+	}
+
+	#watchthis-reaction-banner .watchthis-reaction-intro {
+		font-size: 14px;
+		color: var(--yt-spec-text-secondary, #606060);
+	}
+
+	#watchthis-reaction-banner .watchthis-reaction-senders {
+		font-weight: 500;
+		color: var(--yt-spec-text-primary, #0f0f0f);
+	}
+
+	.watchthis-reaction-status {
+		font-size: 12px;
+		color: var(--yt-spec-text-secondary, #606060);
+		margin-top: 6px;
+		min-height: 16px;
 	}
 `;
 
@@ -577,4 +612,241 @@ export function injectRecommendButton(): boolean {
 export function removeRecommendButton() {
 	const button = document.getElementById("watchthis-button-wrapper");
 	if (button) button.remove();
+}
+
+// ─── Reaction Banner ───────────────────────────────────────────────────────────
+
+// Keep state so the MutationObserver can re-inject with the same data
+let _reactionBannerSenderNames: string[] = [];
+let _reactionBannerIds: string[] = [];
+let _reactionBannerExisting: ReactionType | null = null;
+let _reactionBannerObserver: MutationObserver | null = null;
+let _likeObserver: MutationObserver | null = null;
+
+function toReactionType(s: string | null): ReactionType | null {
+	if (s === "like" || s === "dislike") return s;
+	return null;
+}
+
+// Remove the reaction banner from the DOM and stop all observing
+export function removeReactionBanner() {
+	_reactionBannerObserver?.disconnect();
+	_reactionBannerObserver = null;
+	_likeObserver?.disconnect();
+	_likeObserver = null;
+	_reactionBannerSenderNames = [];
+	_reactionBannerIds = [];
+	_reactionBannerExisting = null;
+	document.getElementById("watchthis-reaction-banner")?.remove();
+}
+
+// Build the banner DOM node (no side effects)
+function buildReactionBanner(
+	senderNames: string[],
+	existingReaction?: ReactionType,
+): HTMLElement {
+	const banner = document.createElement("div");
+	banner.id = "watchthis-reaction-banner";
+
+	// Intro line — build with textContent to stay safe from XSS
+	const intro = document.createElement("p");
+	intro.className = "watchthis-reaction-intro";
+
+	const sendersSpan = document.createElement("span");
+	sendersSpan.className = "watchthis-reaction-senders";
+
+	if (senderNames.length === 1) {
+		sendersSpan.textContent = `@${senderNames[0]}`;
+		intro.appendChild(sendersSpan);
+		intro.appendChild(
+			document.createTextNode(" recommended this video to you."),
+		);
+	} else {
+		const last = senderNames[senderNames.length - 1];
+		const others = senderNames.slice(0, -1);
+		sendersSpan.textContent = others.map((n) => `@${n}`).join(", ");
+		intro.appendChild(sendersSpan);
+			intro.appendChild(document.createTextNode(" and "));
+		const lastSpan = document.createElement("span");
+		lastSpan.className = "watchthis-reaction-senders";
+		lastSpan.textContent = `@${last}`;
+		intro.appendChild(lastSpan);
+		intro.appendChild(
+			document.createTextNode(" recommended this video to you."),
+		);
+	}
+
+	const status = document.createElement("div");
+	status.className = "watchthis-reaction-status";
+
+	banner.appendChild(intro);
+	banner.appendChild(status);
+
+	return banner;
+}
+
+// Insert the banner as a full-width second row directly after #top-row
+// (#top-row contains the channel info + action buttons row)
+function injectReactionBanner(
+	senderNames: string[],
+	existingReaction?: ReactionType,
+) {
+	document.getElementById("watchthis-reaction-banner")?.remove();
+
+	// Prefer #top-row (whole channel+button row); fall back to #actions parent
+	const anchorRow =
+		document.querySelector<HTMLElement>("#top-row") ??
+		document.querySelector<HTMLElement>("#actions");
+	if (!anchorRow?.parentElement) return;
+
+	// Ensure styles are loaded
+	if (!document.getElementById("watchthis-button-styles")) {
+		document.head.appendChild(createRecommendButtonStyles());
+	}
+
+	const banner = buildReactionBanner(senderNames, existingReaction);
+	anchorRow.parentElement.insertBefore(banner, anchorRow.nextSibling);
+
+	// Watch the parent so we can re-inject if YouTube removes our banner
+	_reactionBannerObserver?.disconnect();
+	_reactionBannerObserver = new MutationObserver(() => {
+		if (!document.getElementById("watchthis-reaction-banner")) {
+			if (_reactionBannerIds.length > 0) {
+				injectReactionBanner(
+					_reactionBannerSenderNames,
+					_reactionBannerExisting ?? undefined,
+				);
+				// _likeObserver is intentionally NOT restarted here — it was set up
+				// once in checkAndInjectReactionBanner and continues observing the
+				// like/dislike buttons regardless of banner re-injection.
+			}
+		}
+	});
+	_reactionBannerObserver.observe(anchorRow.parentElement, {
+		childList: true,
+		subtree: false,
+	});
+}
+
+// Check if the current video was recommended by a friend and show the banner
+export async function checkAndInjectReactionBanner() {
+	const videoId = extractVideoId(window.location.href);
+	if (!videoId) return;
+
+	const result = await sendMessage({
+		type: "checkRecommendationForVideo",
+		videoId,
+	});
+
+	if (
+		!result.success ||
+		!result.recommendations ||
+		result.recommendations.length === 0
+	) {
+		return;
+	}
+
+	const recommendations = result.recommendations as Array<{
+		id: string;
+		reaction?: string;
+		expand?: { sender?: { username?: string } };
+	}>;
+
+	const ids = recommendations.map((r) => r.id);
+	const senderNames = recommendations
+		.map((r) => r.expand?.sender?.username)
+		.filter((name): name is string => Boolean(name));
+
+	// Use the reaction from the first record (all share the same reaction)
+	const existingReaction = recommendations[0]?.reaction || null;
+
+	// Store so the MutationObserver can re-inject with the same data
+	_reactionBannerIds = ids;
+	_reactionBannerSenderNames = senderNames;
+	_reactionBannerExisting = toReactionType(existingReaction);
+
+	injectReactionBanner(senderNames, toReactionType(existingReaction) ?? undefined);
+	attachYouTubeLikeObserver(ids, toReactionType(existingReaction));
+}
+
+// Watch YouTube's own like/dislike buttons and sync the result to PocketBase
+function attachYouTubeLikeObserver(
+	recommendationIds: string[],
+	initialReaction: ReactionType | null,
+) {
+	_likeObserver?.disconnect();
+	_likeObserver = null;
+
+	const likeBtn = document.querySelector<HTMLButtonElement>(
+		"#top-level-buttons-computed button.yt-spec-button-shape-next--segmented-start[aria-pressed]",
+	);
+	const dislikeBtn = document.querySelector<HTMLButtonElement>(
+		"#top-level-buttons-computed button.yt-spec-button-shape-next--segmented-end[aria-pressed]",
+	);
+
+	if (!likeBtn && !dislikeBtn) return;
+
+	const getPressed = (): ReactionType | null => {
+		if (likeBtn?.getAttribute("aria-pressed") === "true") return "like";
+		if (dislikeBtn?.getAttribute("aria-pressed") === "true") return "dislike";
+		return null;
+	};
+
+	// Seed from PocketBase so we don't re-save a reaction the user set previously
+	let lastSaved: ReactionType | null = initialReaction ?? getPressed();
+
+	_likeObserver = new MutationObserver(async () => {
+		const reaction = getPressed();
+		// No change compared to last saved state — nothing to do
+		if (reaction === lastSaved) return;
+
+		const status = document.querySelector<HTMLElement>(
+			"#watchthis-reaction-banner .watchthis-reaction-status",
+		);
+
+		// User undid their reaction (both buttons unpressed) → clear in PocketBase
+		if (reaction === null) {
+			// Only clear if we had previously saved something
+			if (lastSaved === null) return;
+			lastSaved = null;
+			if (status) status.textContent = "Saving…";
+			const result = await sendMessage({
+				type: "submitReaction",
+				recommendationIds,
+				reaction: "",
+			});
+			if (result.success) _reactionBannerExisting = null;
+			if (status) {
+				status.textContent = result.success
+					? "Reaction removed"
+					: "Failed to save";
+			}
+			return;
+		}
+
+		// User pressed like or dislike
+		lastSaved = reaction;
+		if (status) status.textContent = "Saving…";
+		const result = await sendMessage({
+			type: "submitReaction",
+			recommendationIds,
+			reaction,
+		});
+		if (result.success) _reactionBannerExisting = reaction;
+		if (status) {
+			status.textContent = result.success
+				? "✓ Reaction saved"
+				: "Failed to save";
+		}
+	});
+
+	const targets = [likeBtn, dislikeBtn].filter(
+		(b): b is HTMLButtonElement => b !== null,
+	);
+	targets.forEach((btn) => {
+		_likeObserver!.observe(btn, {
+			attributes: true,
+			attributeFilter: ["aria-pressed"],
+		});
+	});
 }

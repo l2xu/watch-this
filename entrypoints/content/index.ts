@@ -1,6 +1,11 @@
 import { isYouTubeHomepage, isYouTubeVideoPage } from "./utils";
 import { showRecommendations, removeRecommendations } from "./homepage";
-import { injectRecommendButton, removeRecommendButton } from "./video";
+import {
+	injectRecommendButton,
+	removeRecommendButton,
+	checkAndInjectReactionBanner,
+	removeReactionBanner,
+} from "./video";
 
 // State tracking
 let isLoadingHomepage = false;
@@ -13,6 +18,7 @@ function cleanupVideoPage() {
 		videoRetryTimer = null;
 	}
 	removeRecommendButton();
+	removeReactionBanner();
 }
 
 // Stop homepage mechanisms
@@ -105,6 +111,8 @@ function handleVideoPage() {
 
 			// Try to inject (returns true if successful or already exists)
 			if (injectRecommendButton()) {
+				// Button injected — also check for a reaction banner
+				checkAndInjectReactionBanner();
 				return; // Success, stop retrying
 			}
 

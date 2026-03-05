@@ -130,12 +130,12 @@
       ]
     },
     "mfa": {
-      "enabled": false,
+      "enabled": true,
       "duration": 1800,
       "rule": ""
     },
     "otp": {
-      "enabled": false,
+      "enabled": true,
       "duration": 180,
       "length": 8,
       "emailTemplate": {
@@ -257,7 +257,7 @@
         "type": "bool"
       },
       {
-        "hidden": true,
+        "hidden": false,
         "id": "bool1547992806",
         "name": "emailVisibility",
         "presentable": false,
@@ -322,8 +322,7 @@
     "passwordAuth": {
       "enabled": true,
       "identityFields": [
-        "email",
-        "username"
+        "email"
       ]
     },
     "mfa": {
@@ -858,7 +857,7 @@
     "listRule": "receiver = @request.auth.id || sender = @request.auth.id",
     "viewRule": "receiver = @request.auth.id || sender = @request.auth.id",
     "createRule": "sender = @request.auth.id",
-    "updateRule": "receiver = @request.auth.id ",
+    "updateRule": "receiver = @request.auth.id",
     "deleteRule": "sender = @request.auth.id || receiver = @request.auth.id",
     "name": "link_recommendations",
     "type": "base",
@@ -926,16 +925,32 @@
         "type": "bool"
       },
       {
+        "autogeneratePattern": "",
         "hidden": false,
-        "id": "text1234567890",
+        "id": "text3065852031",
         "max": 280,
         "min": 0,
         "name": "message",
         "pattern": "^[^\\x00-\\x08\\x0B-\\x0C\\x0E-\\x1F\\x7F]{0,280}$",
         "presentable": false,
+        "primaryKey": false,
         "required": false,
         "system": false,
         "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "select2765555703",
+        "maxSelect": 1,
+        "name": "reaction",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "like",
+          "dislike"
+        ]
       },
       {
         "hidden": false,

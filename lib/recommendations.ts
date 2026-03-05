@@ -1,6 +1,7 @@
 import pb from "./pocketbase";
 import { sanitizeYouTubeUrl, validateMessage } from "./validation";
-import type { User, LinkRecommendation } from "../types";
+import { extractVideoId } from "./youtube";
+import type { User, LinkRecommendation, ReactionType } from "../types";
 
 /**
  * Check if a URL is a valid YouTube video or shorts URL
@@ -134,6 +135,65 @@ export async function markAsSeen(
 		return {
 			success: false,
 			error: error?.message || "Failed to mark as seen",
+		};
+	}
+}
+
+/**
+ * Find all unreacted recommendations for the current user matching a given video ID.
+ * Expands the sender relation to show usernames in the reaction banner.
+ */
+export async function findRecommendationsByVideoId(videoId: string): Promise<{
+	success: boolean;
+	recommendations?: LinkRecommendation[];
+	error?: string;
+}> {
+	try {
+		const currentUser = pb.authStore.model;
+		if (!currentUser) {
+			return { success: false, error: "You must be logged in" };
+		}
+
+		const result = await pb
+			.collection("link_recommendations")
+			.getList<LinkRecommendation>(1, 100, {
+				filter: `receiver = "${currentUser.id}"`,
+				expand: "sender",
+				sort: "-created",
+			});
+
+		const matching = result.items.filter(
+			(rec) => extractVideoId(rec.url) === videoId,
+		);
+
+		return { success: true, recommendations: matching };
+	} catch (error: any) {
+		return {
+			success: false,
+			error: error?.message || "Failed to find recommendations",
+		};
+	}
+}
+
+/**
+ * Save a reaction for a recommendation (and all related recommendation IDs
+ * if multiple senders recommended the same video).
+ */
+export async function submitReaction(
+	recommendationIds: string[],
+	reaction: ReactionType | "",
+): Promise<{ success: boolean; error?: string }> {
+	try {
+		await Promise.all(
+			recommendationIds.map((id) =>
+				pb.collection("link_recommendations").update(id, { reaction }),
+			),
+		);
+		return { success: true };
+	} catch (error: any) {
+		return {
+			success: false,
+			error: error?.message || "Failed to submit reaction",
 		};
 	}
 }
