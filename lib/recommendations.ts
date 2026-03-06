@@ -120,6 +120,41 @@ export async function getReceivedRecommendations(): Promise<{
 }
 
 /**
+ * Get all recommendations sent by the current user
+ * Sorted by newest first
+ */
+export async function getSentRecommendations(): Promise<{
+	success: boolean;
+	recommendations?: LinkRecommendation[];
+	error?: string;
+}> {
+	try {
+		const currentUser = pb.authStore.model;
+		if (!currentUser) {
+			return { success: false, error: "You must be logged in" };
+		}
+
+		const result = await pb
+			.collection("link_recommendations")
+			.getList<LinkRecommendation>(1, 50, {
+				filter: `sender = "${currentUser.id}"`,
+				expand: "receiver",
+				sort: "-created",
+			});
+
+		return {
+			success: true,
+			recommendations: result.items,
+		};
+	} catch (error: any) {
+		return {
+			success: false,
+			error: error?.message || "Failed to get sent recommendations",
+		};
+	}
+}
+
+/**
  * Mark a recommendation as seen
  */
 export async function markAsSeen(
