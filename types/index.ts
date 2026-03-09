@@ -61,3 +61,23 @@ export interface RecommendationWithMeta extends LinkRecommendation {
 	meta?: OEmbedData | null;
 	thumbnailUrl?: string;
 }
+
+// Notification types
+export type NotificationType = "seen" | "liked" | "disliked";
+
+export interface Notification extends RecordModel {
+	recipient: string;
+	type: NotificationType;
+	recommendation: string;
+	read: boolean;
+	expand?: {
+		recommendation?: LinkRecommendation & {
+			expand?: { receiver?: User };
+		};
+	};
+}
+
+export interface NotificationWithMeta extends Notification {
+	meta?: OEmbedData | null;
+	thumbnailUrl?: string;
+}

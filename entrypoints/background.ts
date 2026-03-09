@@ -8,6 +8,12 @@ import {
 } from "../lib/recommendations";
 import type { ReactionType } from "../types";
 import { getFriends } from "../lib/friends";
+import pb from "../lib/pocketbase";
+import {
+	getNotifications,
+	markNotificationRead,
+	markAllNotificationsRead,
+} from "../lib/notifications";
 
 // Message types for communication between content scripts and background
 export type BackgroundMessage =
@@ -27,7 +33,10 @@ export type BackgroundMessage =
 			type: "submitReaction";
 			recommendationIds: string[];
 			reaction: ReactionType | "";
-	  };
+	  }
+	| { type: "getNotifications" }
+	| { type: "markNotificationRead"; id: string }
+	| { type: "markAllNotificationsRead" };
 
 // Standard response type
 type MessageResponse<T = unknown> =
@@ -133,6 +142,25 @@ async function handleMessage(
 					message.reaction,
 				);
 				if (!result.success) throw new Error(result.error);
+				return {};
+			});
+
+		case "getNotifications":
+			return withAuth(async () => {
+				const notifications = await getNotifications();
+				return { notifications };
+			});
+
+		case "markNotificationRead":
+			return withAuth(async () => {
+				await markNotificationRead(message.id);
+				return {};
+			});
+
+		case "markAllNotificationsRead":
+			return withAuth(async () => {
+				const userId = pb.authStore.model!.id;
+				await markAllNotificationsRead(userId);
 				return {};
 			});
 

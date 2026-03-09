@@ -11,7 +11,16 @@ import {
 	extractVideoId,
 	getThumbnailUrl,
 } from "../../../lib/youtube";
-import type { User, RecommendationWithMeta } from "../../../types";
+import type {
+	User,
+	RecommendationWithMeta,
+	NotificationWithMeta,
+} from "../../../types";
+import {
+	getNotifications,
+	deleteNotification,
+	deleteAllNotifications,
+} from "../../../lib/notifications";
 import { openInNewTab } from "../../../lib/browser";
 import FriendsList from "./FriendsList";
 import Icon from "./Icon";
@@ -44,6 +53,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 	>([]);
 	const [unseenCount, setUnseenCount] = useState<number>(0);
 	const [pendingRequestsCount, setPendingRequestsCount] = useState<number>(0);
+	const [notifications, setNotifications] = useState<NotificationWithMeta[]>(
+		[],
+	);
 	const [loading, setLoading] = useState(true);
 
 	// Received view state
@@ -71,11 +83,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 		setLoading(true);
 
 		try {
-			const [receivedResult, sentResult, incomingResult] = await Promise.all([
-				getReceivedRecommendations(),
-				getSentRecommendations(),
-				getIncomingRequests(),
-			]);
+			const [receivedResult, sentResult, incomingResult, fetchedNotifications] =
+				await Promise.all([
+					getReceivedRecommendations(),
+					getSentRecommendations(),
+					getIncomingRequests(),
+					getNotifications(),
+				]);
 
 			if (receivedResult.success && receivedResult.recommendations) {
 				// Fetch metadata for all received recommendations in parallel
@@ -111,6 +125,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 			if (incomingResult.success && incomingResult.requests) {
 				setPendingRequestsCount(incomingResult.requests.length);
 			}
+			setNotifications(fetchedNotifications);
 		} catch (err) {
 			console.error("Load data error:", err);
 		} finally {
@@ -136,6 +151,23 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
 		// Open link in new tab (this may close the popup)
 		openInNewTab(url);
+	};
+
+	const handleNotificationClick = (n: NotificationWithMeta) => {
+		const url = n.expand?.recommendation?.url;
+		if (!url) return;
+		openInNewTab(url);
+	};
+
+	const handleDismissNotification = async (e: React.MouseEvent, id: string) => {
+		e.stopPropagation();
+		setNotifications((prev) => prev.filter((n) => n.id !== id));
+		await deleteNotification(id);
+	};
+
+	const handleDismissAll = async () => {
+		setNotifications([]);
+		await deleteAllNotifications(user.id);
 	};
 
 	const handleLogout = async () => {
@@ -345,7 +377,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 								view: "notifications",
 								icon: "bell",
 								label: "Alerts",
-								badge: 0,
+								badge: notifications.length,
 							},
 							{
 								view: "friends",
@@ -602,12 +634,106 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
 			{/* Notifications View */}
 			{currentView === "notifications" && (
-				<div className="flex flex-col items-center justify-center py-12 text-center">
-					<Icon name="bell" size={10} className="text-gray-300 mb-4" />
-					<p className="text-sm font-medium text-gray-500">
-						Notifications coming soon
-					</p>
-					<p className="text-xs text-gray-400 mt-1">Stay tuned for updates!</p>
+				<div>
+					<div className="flex items-center justify-between mb-4">
+						<h3 className="font-semibold text-gray-800">Alerts</h3>
+						<button
+							onClick={loadData}
+							className="text-xs text-gray-500 hover:text-gray-700"
+						>
+							↻ Refresh
+						</button>
+					</div>
+
+					{loading ? (
+						<div className="flex items-center justify-center py-8">
+							<div className="text-gray-600">Loading...</div>
+						</div>
+					) : notifications.length === 0 ? (
+						<div className="flex flex-col items-center justify-center py-12 text-center">
+							<Icon name="bell" size={10} className="text-gray-300 mb-4" />
+							<p className="text-sm font-medium text-gray-500">No alerts yet</p>
+							<p className="text-xs text-gray-400 mt-1">
+								You'll be notified when friends react to your recommendations
+							</p>
+						</div>
+					) : (
+						<div className="space-y-1 max-h-96 overflow-y-auto">
+							{notifications.length > 0 && (
+								<div className="flex justify-end mb-2">
+									<button
+										onClick={handleDismissAll}
+										className="text-xs text-gray-400 hover:text-gray-600 hover:cursor-pointer"
+									>
+										Dismiss all
+									</button>
+								</div>
+							)}
+							{notifications.map((n) => {
+								const username =
+									n.expand?.recommendation?.expand?.receiver?.username ??
+									"Someone";
+								const actionText =
+									n.type === "seen"
+										? "watched"
+										: n.type === "liked"
+											? "liked"
+											: "disliked";
+								const typeIcon: IconName =
+									n.type === "seen"
+										? "eye"
+										: n.type === "liked"
+											? "thumb-up"
+											: "thumb-down";
+								return (
+									<div
+										key={n.id}
+										onClick={() => handleNotificationClick(n)}
+										className="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors hover:bg-gray-50"
+									>
+										{/* Thumbnail with type icon badge */}
+										<div className="relative shrink-0">
+											{n.thumbnailUrl ? (
+												<img
+													src={n.thumbnailUrl}
+													alt="Video thumbnail"
+													className="w-16 h-9 object-cover rounded"
+												/>
+											) : (
+												<div className="w-16 h-9 bg-gray-200 rounded" />
+											)}
+											<span className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+												<Icon
+													name={typeIcon}
+													size={3}
+													className={
+														n.type === "liked"
+															? "text-green-500"
+															: n.type === "disliked"
+																? "text-red-500"
+																: "text-primary-500"
+													}
+												/>
+											</span>
+										</div>
+										{/* Message */}
+										<p className="text-xs text-gray-700 leading-snug grow">
+											<span className="font-medium">{username}</span>{" "}
+											{actionText} the video you recommended
+										</p>
+										{/* Dismiss button */}
+										<button
+											onClick={(e) => handleDismissNotification(e, n.id)}
+											className="shrink-0 text-gray-300 hover:text-gray-500 transition-colors hover:cursor-pointer"
+											title="Dismiss"
+										>
+											<Icon name="x" size={3} />
+										</button>
+									</div>
+								);
+							})}
+						</div>
+					)}
 				</div>
 			)}
 
