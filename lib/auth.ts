@@ -8,6 +8,30 @@ import {
 import type { User, AuthState } from "../types";
 
 const AUTH_STORAGE_KEY = "auth_state";
+const AUTH_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+
+let lastAuthRefreshAt = 0;
+
+function unauthenticatedState(): AuthState {
+	return {
+		isAuthenticated: false,
+		user: null,
+		token: null,
+	};
+}
+
+function isAuthError(error: any): boolean {
+	if (error?.status === 401 || error?.status === 403) {
+		return true;
+	}
+
+	const message = String(error?.message || "").toLowerCase();
+	return (
+		message.includes("requires valid record authorization token") ||
+		message.includes("invalid token") ||
+		message.includes("token is invalid")
+	);
+}
 
 /**
  * Save auth state to storage
@@ -32,20 +56,46 @@ export async function getAuthState(): Promise<AuthState> {
 		if (authState && authState.token) {
 			// Restore PocketBase auth state
 			pb.authStore.save(authState.token, authState.user);
-			return authState;
+
+			// Token is expired/invalid locally -> clear stale state immediately
+			if (!pb.authStore.isValid) {
+				await clearAuthState();
+				return unauthenticatedState();
+			}
+
+			// Refresh auth periodically to keep the session valid and synced.
+			const now = Date.now();
+			if (now - lastAuthRefreshAt < AUTH_REFRESH_INTERVAL_MS) {
+				return authState;
+			}
+
+			lastAuthRefreshAt = now;
+
+			try {
+				const refreshed = await pb.collection("users").authRefresh<User>();
+				const refreshedUser = refreshed.record as unknown as User;
+
+				await saveAuthState(pb.authStore.token, refreshedUser);
+
+				return {
+					isAuthenticated: true,
+					user: refreshedUser,
+					token: pb.authStore.token,
+				};
+			} catch (error: any) {
+				if (isAuthError(error)) {
+					await clearAuthState();
+					return unauthenticatedState();
+				}
+
+				// Keep the locally valid state when refresh fails for transient reasons.
+				return authState;
+			}
 		}
 
-		return {
-			isAuthenticated: false,
-			user: null,
-			token: null,
-		};
+		return unauthenticatedState();
 	} catch (error) {
-		return {
-			isAuthenticated: false,
-			user: null,
-			token: null,
-		};
+		return unauthenticatedState();
 	}
 }
 
@@ -55,6 +105,7 @@ export async function getAuthState(): Promise<AuthState> {
 export async function clearAuthState(): Promise<void> {
 	await removeFromStorage(AUTH_STORAGE_KEY);
 	pb.authStore.clear();
+	lastAuthRefreshAt = 0;
 }
 
 /**
